@@ -5,7 +5,7 @@ Bộ tài liệu kỹ thuật, Skill hướng dẫn và Source Code Examples chu
 ## 1. Cấu trúc Gói 6 Skills Doanh nghiệp (Enterprise Skills)
 
 - **`skills/01-backend-modular-monolith/`**: Hướng dẫn kiến trúc Backend ASP.NET Core (.NET 8/9), Elsa Workflows v3, SQL Server Multi-Schema (10 schemas), MediatR Domain Events, Base Entities (`ISoftDeletable`, `IAuditable`).
-- **`skills/02-frontend-adminlte-formio/`**: Hướng dẫn Frontend AdminLTE 3 / SPA, Form.io Dynamic Forms kèm Cascading Loading, Nhúng Elsa Studio Designer, Dashboard BI (ApexCharts/Chart.js).
+- **`skills/02-frontend-ui-ux-pro-max/`**: Hướng dẫn Frontend Engineering & UI/UX Pro Max toàn diện (80 styles, 192 palettes, 74 fonts, 120 UX rules, 22 stacks), bao trùm Form.io Dynamic Forms (Cascading Dropdowns), Nhúng Elsa Studio Designer và Dashboard BI Realtime.
 - **`skills/03-security-and-governance/`**: Tiêu chuẩn Bảo mật phân tầng (RBAC/ABAC), Chống giả mạo dữ liệu (Anti-Tampering FluentValidation), Audit Trail Ký thay Ủy quyền và Ranh giới bảo mật AI Context.
 - **`skills/04-local-mcp-ai-copilot/`**: Thiết kế Local MCP Server, C# MCP Tools cho báo cáo thống kê tự nhiên, Pipeline RAG tra cứu quy chế với Qdrant Vector DB.
 - **`skills/05-high-performance-tuning/`**: *(MỚI)* Tối ưu hóa hiệu năng cao: Caching 2 tầng (L1 In-Memory + L2 Redis), CQRS đường đọc tách biệt với Dapper, Tối ưu SQL Server Indexing (Covering & Filtered Index), Connection Pooling.
