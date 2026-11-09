@@ -114,3 +114,4 @@
 | **Race condition khi Refresh Token:** Nhiều request đồng thời trả về 401 gây gọi API refresh lặp lại liên tục | Cao | Sử dụng cờ hiệu `isRefreshing` và hàng đợi `failedQueue` trong Axios Interceptor để gom các request chờ token mới. |
 | **Lộ đường dẫn nhạy cảm trên Router:** Người dùng gõ tay URL trang quản trị | Trung bình | Kiểm tra chặt chẽ `beforeEach` Router Guard kết hợp kiểm tra quyền từ AuthStore trước khi cho phép render component. |
 | **FOUC (Flash of Unstyled Content) Dark Mode:** Màn hình nháy sáng trước khi nạp xong theme | Thấp | Chèn script nhỏ đồng bộ ở thẻ `<head>` trong `index.html` đọc trạng thái `theme` từ `localStorage` trước khi Vue mount. |
+

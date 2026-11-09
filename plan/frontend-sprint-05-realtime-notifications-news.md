@@ -107,3 +107,4 @@
 |---|:---:|---|
 | **Rò rỉ bộ nhớ WebSocket (Memory Leak):** Khi chuyển qua lại giữa các view mà không giải phóng SignalR listeners | Cao | Bắt buộc dọn dẹp các sự kiện lắng nghe (`hubConnection.off(...)`) trong hook `onUnmounted` của Vue. |
 | **Spam Toast khi nhận nhiều thông báo cùng lúc:** Gây rối màn hình | Trung bình | Cấu hình Toast System chỉ hiển thị tối đa 3 toasts cùng một thời điểm, các thông báo tiếp theo được xếp hàng đợi (Toast Queue). |
+

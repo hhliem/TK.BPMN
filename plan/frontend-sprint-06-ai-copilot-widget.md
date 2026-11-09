@@ -98,3 +98,4 @@
 |---|:---:|---|
 | **Giật lag giao diện khi stream text quá nhanh:** Render Markdown lại toàn bộ DOM sau mỗi ký tự nhận được | Cao | Sử dụng kỹ thuật RequestAnimationFrame (RAF) hoặc throttle cập nhật DOM 50ms/lần thay vì cập nhật sau từng token ký tự. |
 | **XSS Vulnerability từ nội dung Markdown:** Kẻ xấu chèn mã script độc hại vào văn bản quy chế | Cao | Bắt buộc chạy qua thư viện lọc mã độc `DOMPurify` trước khi đưa nội dung Markdown vào `v-html`. |
+

@@ -105,3 +105,4 @@
 |---|:---:|---|
 | **ECharts render lại làm chậm trang khi đổi kích thước màn hình:** Resize window liên tục | Trung bình | Dùng `ResizeObserver` kết hợp debounce 150ms khi gọi hàm `chartInstance.resize()`. |
 | **Báo cáo khối lượng dữ liệu lớn gây tràn RAM trình duyệt:** Khi xuất hàng chục ngàn dòng | Cao | Phân trang chặt chẽ ở bảng preview; khi xuất dữ liệu lớn $> 1,000$ dòng, chuyển hướng gọi API Backend sinh file nền và trả về URL tải tệp. |
+

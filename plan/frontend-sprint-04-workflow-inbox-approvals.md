@@ -107,3 +107,4 @@
 |---|:---:|---|
 | **BPMN Canvas tải chậm hoặc nặng bộ nhớ:** Khi quy trình phức tạp có nhiều nhánh rẽ | Cao | Tối ưu hóa bundle Elsa Studio, sử dụng cơ chế Lazy Loading chỉ nạp thư viện đồ họa khi người dùng bấm vào tab Sơ đồ. |
 | **Double Submit khi người dùng bấm Duyệt nhiều lần:** Gây lỗi trùng lặp phê duyệt | Trung bình | Tự động vô hiệu hóa (disabled) nút bấm ngay sau click đầu tiên và hiển thị loading spinner cho đến khi API phản hồi. |
+

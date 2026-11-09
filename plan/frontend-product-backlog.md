@@ -108,3 +108,4 @@ Một User Story Frontend được xem là Hoàn thành (Done) khi đáp ứng �
 4. **Tiêu chuẩn Tiếp cận (Accessibility):** Có `cursor: pointer` cho phần tử bấm được, có focus ring khi điều hướng bằng bàn phím, độ tương phản đạt tối thiểu 4.5:1.
 5. **Icon System Chuẩn:** Tuyệt đối không dùng Emoji làm biểu tượng hệ thống; sử dụng SVG vector (Lucide Icons).
 6. **Không lỗi Console:** Không có warning hoặc error nào trên Developer Tools Console.
+

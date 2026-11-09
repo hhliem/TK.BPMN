@@ -110,3 +110,4 @@
 |---|:---:|---|
 | **Xung đột CSS giữa Form.io và Tailwind:** Class nội bộ của Form.io bị trùng tên với Tailwind | Cao | Sử dụng CSS Scoping hoặc bọc Form.io trong container riêng kèm tiền tố cấu hình rõ ràng. |
 | **Dữ liệu nháp quá tải LocalStorage (giới hạn 5MB):** Khi người dùng upload ảnh base64 | Trung bình | Không lưu file đính kèm vào LocalStorage; chỉ lưu File Metadata (ID, tên tệp) và dùng IndexedDB để lưu trữ nháp nếu cần. |
+

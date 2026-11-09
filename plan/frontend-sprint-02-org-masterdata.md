@@ -107,3 +107,4 @@
 |---|:---:|---|
 | **Cây tổ chức quá lớn làm chậm DOM:** Khi tập đoàn có hàng trăm chi nhánh | Cao | Triển khai cơ chế Virtual Tree hoặc chỉ nạp cây ở dạng lazy-load khi người dùng nhấp mở nút con. |
 | **Bảng Ma trận phân quyền tràn màn hình:** Hàng trăm quyền x hàng chục vai trò gây lag scroll | Trung bình | Cố định (sticky) hàng tiêu đề và cột tên quyền bằng CSS `position: sticky`, phân nhóm quyền theo từng Accordion Module thu gọn. |
+

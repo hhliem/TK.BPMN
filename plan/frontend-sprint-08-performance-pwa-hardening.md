@@ -117,3 +117,4 @@
 |---|:---:|---|
 | **Service Worker cache phiên bản cũ:** Người dùng không nhận được tính năng mới khi deploy | Cao | Sử dụng chiến lược `autoUpdate` của `vite-plugin-pwa` kết hợp thông báo: "Đã có phiên bản mới. Bấm vào đây để cập nhật". |
 | **Chính sách CSP quá chặt chặn tài nguyên bên thứ ba:** Lỗi chặn font hoặc avatar OneDrive | Trung bình | Kiểm tra kỹ lưỡng các domain whitelist trong header `Content-Security-Policy` (`img-src 'self' data: https:`, `font-src 'self' data:`). |
+
