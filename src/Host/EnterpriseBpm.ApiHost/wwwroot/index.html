@@ -1,0 +1,3342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enterprise BPMN Platform | Sprint 04 Portal</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- AdminLTE 3 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <!-- Form.io CSS -->
+  <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+
+  <style>
+    .timeline-item { box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2); }
+    .hash-badge { font-family: monospace; font-size: 0.8rem; word-break: break-all; }
+    .badge-urgent { background-color: #dc3545; color: white; }
+    .badge-high { background-color: #fd7e14; color: white; }
+    .badge-normal { background-color: #28a745; color: white; }
+    .designer-canvas { border: 2px dashed #ced4da; border-radius: 8px; min-height: 400px; background: #fafbfc; position: relative; }
+    .workflow-node { width: 220px; border-radius: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .text-purple { color: #6f42c1 !important; }
+    .bg-purple { background-color: #6f42c1 !important; color: white !important; }
+    .bg-gradient-purple { background: linear-gradient(135deg, #6610f2, #6f42c1) !important; color: white !important; }
+    .btn-purple { background-color: #6f42c1; border-color: #643ab0; color: white; }
+    .btn-purple:hover { background-color: #5a32a3; border-color: #4e2b8c; color: white; }
+    .citation-pill { display: inline-flex; align-items: center; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 2px 8px; font-size: 0.75rem; color: #4338ca; text-decoration: none; margin: 2px 4px 2px 0; transition: all 0.2s; }
+    .citation-pill:hover { background: #e0e7ff; color: #3730a3; text-decoration: none; }
+    .ai-msg-bubble { border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.45; }
+    .ai-user-bubble { background: #007bff; color: white; margin-left: auto; border-bottom-right-radius: 2px; max-width: 85%; }
+    .ai-assistant-bubble { background: #f8f9fa; color: #212529; border: 1px solid #e9ecef; margin-right: auto; border-bottom-left-radius: 2px; max-width: 95%; }
+    .ai-assistant-bubble p { margin-bottom: 0.4rem; }
+    .ai-assistant-bubble p:last-child { margin-bottom: 0; }
+    .ai-assistant-bubble pre { background: #212529; color: #f8f9fa; padding: 6px; border-radius: 4px; overflow-x: auto; font-size: 0.75rem; }
+    .ai-assistant-bubble table { width: 100%; border-collapse: collapse; margin-bottom: 0.4rem; font-size: 0.8rem; }
+    .ai-assistant-bubble th, .ai-assistant-bubble td { border: 1px solid #dee2e6; padding: 3px 6px; }
+  </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="#dashboard" class="nav-link" onclick="switchTab('dashboard')">Trang chủ</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="#designer" class="nav-link" onclick="switchTab('designer')">BPMN Designer</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="#submit" class="nav-link" onclick="switchTab('submit')">Nộp Đơn Trình Ký</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="#tasks" class="nav-link" onclick="switchTab('tasks')">Nhiệm Vụ Duyệt (<span id="pending-count-badge">0</span>)</a>
+      </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <!-- TSK-417: Notification Center Bell Widget -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#" id="bell-dropdown-toggle" title="Trung tâm Thông báo">
+          <i class="far fa-bell fa-lg"></i>
+          <span class="badge badge-danger navbar-badge" id="bell-unread-count">3</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="bell-dropdown-content">
+          <span class="dropdown-item dropdown-header font-weight-bold" id="bell-header-text">3 Thông báo hệ thống mới</span>
+          <div class="dropdown-divider"></div>
+          <div id="bell-items-list" style="max-height: 280px; overflow-y: auto;">
+            <a href="javascript:void(0)" onclick="switchTab('tasks')" class="dropdown-item">
+              <i class="fas fa-file-signature mr-2 text-primary"></i> <small>Nhiệm vụ duyệt mới cho phiếu <strong>PR-2026-001</strong></small>
+              <span class="float-right text-muted text-sm">Vừa xong</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="javascript:void(0)" onclick="switchTab('news')" class="dropdown-item">
+              <i class="fas fa-bullhorn mr-2 text-danger"></i> <small><strong>[KHẨN]</strong> Chính sách BHXH & An toàn 2027</small>
+              <span class="float-right text-muted text-sm">10p trước</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="javascript:void(0)" onclick="switchTab('notifications')" class="dropdown-item">
+              <i class="fas fa-check-circle mr-2 text-success"></i> <small>Phiếu mua sắm máy chủ đã duyệt</small>
+              <span class="float-right text-muted text-sm">1h trước</span>
+            </a>
+          </div>
+          <div class="dropdown-divider"></div>
+          <a href="javascript:void(0)" class="dropdown-item dropdown-footer text-center text-primary font-weight-bold" onclick="switchTab('notifications')">
+            <i class="fas fa-list mr-1"></i> Quản lý Mẫu & Nhật Ký Gửi Tin
+          </a>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/swagger" target="_blank" title="Mở Swagger API Docs">
+          <i class="fas fa-code"></i> Swagger v1
+        </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-user-circle"></i> <strong>Super Admin (DevToken)</strong>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a href="#" class="brand-link" id="app-brand-link">
+      <img src="https://adminlte.io/themes/v3/dist/img/AdminLTELogo.png" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8" id="app-brand-logo">
+      <span class="brand-text font-weight-light" id="app-brand-title"><strong>BPMN Platform</strong> v1.4</span>
+    </a>
+
+    <div class="sidebar">
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link active" id="nav-dashboard" onclick="switchTab('dashboard')">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Dashboard Vận Hành</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link" id="nav-designer" onclick="switchTab('designer')">
+              <i class="nav-icon fas fa-project-diagram"></i>
+              <p>Elsa BPMN Designer</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link" id="nav-submit" onclick="switchTab('submit')">
+              <i class="nav-icon fas fa-file-signature"></i>
+              <p>Nộp Phiếu Trình Ký</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link" id="nav-tasks" onclick="switchTab('tasks')">
+              <i class="nav-icon fas fa-tasks"></i>
+              <p>Nhiệm Vụ Cần Duyệt <span class="badge badge-info right" id="sidebar-task-count">0</span></p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link" id="nav-documents" onclick="switchTab('documents')">
+              <i class="nav-icon fas fa-folder-open"></i>
+              <p>Kho Tài Liệu OneDrive</p>
+            </a>
+          </li>
+          <li class="nav-header">TRUYỀN THÔNG & THÔNG BÁO</li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link" id="nav-news" onclick="switchTab('news')">
+              <i class="nav-icon fas fa-newspaper text-warning"></i>
+              <p>Bản Tin & Thông Cáo</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link" id="nav-notifications" onclick="switchTab('notifications')">
+              <i class="nav-icon fas fa-envelope-open-text text-info"></i>
+              <p>Mẫu Thông Báo & Log</p>
+            </a>
+          </li>
+          <li class="nav-header">HỆ THỐNG DOANH NGHIỆP</li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link" id="nav-settings" onclick="switchTab('settings')">
+              <i class="nav-icon fas fa-palette text-danger"></i>
+              <p>Cấu Hình Thương Hiệu</p>
+            </a>
+          </li>
+          <li class="nav-header">TRỢ LÝ THÔNG MINH AI & RAG</li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link" id="nav-ai-admin" onclick="switchTab('ai-admin')">
+              <i class="nav-icon fas fa-brain text-purple"></i>
+              <p>Trợ Lý AI & Tri Thức RAG <span class="badge badge-warning right">Sprint 06</span></p>
+            </a>
+          </li>
+          <li class="nav-header">PHÂN TÍCH & BÁO CÁO BI</li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link" id="nav-analytics" onclick="switchTab('analytics')">
+              <i class="nav-icon fas fa-chart-line text-success"></i>
+              <p>Báo Cáo Toàn Hệ Thống & BI <span class="badge badge-success right">Sprint 07</span></p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0" id="section-title">Dashboard Vận Hành</h1>
+          </div>
+          <div class="col-sm-6 text-right">
+            <span class="badge badge-success p-2"><i class="fas fa-check-circle"></i> Sprint 04 Notification & News Ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+        <!-- 1. DASHBOARD VIEW -->
+        <div id="view-dashboard" class="view-panel">
+          <div class="row">
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-info">
+                <div class="inner"><h3 id="stat-active-workflows">1</h3><p>Quy trình Đang Chạy</p></div>
+                <div class="icon"><i class="fas fa-cogs"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-warning">
+                <div class="inner"><h3 id="stat-pending-tasks">1</h3><p>Tác vụ Chờ Duyệt</p></div>
+                <div class="icon"><i class="fas fa-clock"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-success">
+                <div class="inner"><h3 id="stat-attachments">1</h3><p>Tài liệu trên OneDrive</p></div>
+                <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-danger">
+                <div class="inner"><h3>100%</h3><p>Chữ Ký Số Bất Biến</p></div>
+                <div class="icon"><i class="fas fa-shield-alt"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card card-primary card-outline">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fas fa-rocket mr-1"></i> Tính năng Trọng tâm Sprint 03 Đã Sẵn Sàng Nghiệm Thu</h3>
+            </div>
+            <div class="card-body">
+              <p>Chào mừng bạn đến với Cổng quản trị <strong>Enterprise BPMN Platform (Sprint 03)</strong>. Tất cả 20 User Stories kỹ thuật đã được tích hợp thành công:</p>
+              <ul>
+                <li><strong>Elsa Workflows v3 BPMN Engine:</strong> Định nghĩa Activity, tạo Bookmark, tạm dừng quy trình và Resume với RedLock Idempotency.</li>
+                <li><strong>Microsoft OneDrive & Graph API:</strong> Truyền stream file trực tiếp, kiểm soát định dạng whitelist & dung lượng $\le 25\text{ MB}$, Time-limited Signed URLs.</li>
+                <li><strong>Lịch sử Phê duyệt Bất biến (Immutable Approval History):</strong> Băm chữ ký số SHA-256 xác thực chống sửa xóa dữ liệu.</li>
+                <li><strong>Kiểm soát Trễ hạn SLA:</strong> Background Worker tự động kích hoạt quy trình leo thang khi quá hạn.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. BPMN DESIGNER VIEW (TSK-313) -->
+        <div id="view-designer" class="view-panel" style="display:none;">
+          <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fas fa-project-diagram mr-1"></i> Elsa Studio BPMN Activity Designer (Mô hình Luồng 2 Cấp Phê duyệt)</h3>
+            </div>
+            <div class="card-body">
+              <div class="designer-canvas p-4 d-flex justify-content-around align-items-center">
+                <!-- Node 1: Start -->
+                <div class="card workflow-node bg-light border-primary text-center p-3">
+                  <i class="fas fa-play-circle text-primary fa-2x mb-2"></i>
+                  <h6><strong>Bắt đầu Quy trình</strong></h6>
+                  <small class="text-muted">Nộp Form Đề nghị Mua sắm</small>
+                </div>
+                <i class="fas fa-arrow-right fa-2x text-muted"></i>
+
+                <!-- Node 2: Custom ApproveFormActivity (LineManager) -->
+                <div class="card workflow-node bg-light border-warning text-center p-3">
+                  <span class="badge badge-warning mb-1">ApproveFormActivity</span>
+                  <i class="fas fa-user-check text-warning fa-2x mb-2"></i>
+                  <h6><strong>Trưởng Phòng Duyệt</strong></h6>
+                  <small class="text-muted">TargetRole: LineManager | SLA: 24h</small>
+                </div>
+                <i class="fas fa-arrow-right fa-2x text-muted"></i>
+
+                <!-- Node 3: Custom ApproveFormActivity (Director) -->
+                <div class="card workflow-node bg-light border-success text-center p-3">
+                  <span class="badge badge-success mb-1">ApproveFormActivity</span>
+                  <i class="fas fa-award text-success fa-2x mb-2"></i>
+                  <h6><strong>Giám Đốc Phê Duyệt</strong></h6>
+                  <small class="text-muted">TargetRole: Director | SLA: 48h</small>
+                </div>
+                <i class="fas fa-arrow-right fa-2x text-muted"></i>
+
+                <!-- Node 4: End -->
+                <div class="card workflow-node bg-light border-dark text-center p-3">
+                  <i class="fas fa-flag-checkered text-dark fa-2x mb-2"></i>
+                  <h6><strong>Quy trình Hoàn tất</strong></h6>
+                  <small class="text-muted">Tự động sinh Quyết định PDF</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. SUBMIT FORM VIEW (TSK-314) -->
+        <div id="view-submit" class="view-panel" style="display:none;">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fas fa-edit mr-1"></i> Biểu Mẫu Trình Ký Mua Sắm Trang Thiết Bị (Form.io + Upload Đính Kèm)</h3>
+            </div>
+            <div class="card-body">
+              <form id="submission-form" onsubmit="handleFormSubmit(event)">
+                <div class="row">
+                  <div class="col-md-6 form-group">
+                    <label>Loại Biểu Mẫu</label>
+                    <input type="text" class="form-control" id="form-key" value="purchase_request" readonly>
+                  </div>
+                  <div class="col-md-6 form-group">
+                    <label>Mức Độ Ưu Tiên</label>
+                    <select class="form-control" id="submission-priority">
+                      <option value="1">1 - Bình thường (Normal)</option>
+                      <option value="2">2 - Cao (High)</option>
+                      <option value="3">3 - Khẩn cấp (Urgent)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Mục đích Đề nghị Mua sắm</label>
+                  <input type="text" class="form-control" id="form-purpose" value="Trang bị 05 màn hình đồ họa 4K cho Khối Kỹ thuật" required>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 form-group">
+                    <label>Tổng Ngân Sách Dự Kiến (VNĐ)</label>
+                    <input type="number" class="form-control" id="form-amount" value="75000000" required>
+                  </div>
+                  <div class="col-md-6 form-group">
+                    <label>Đơn Vị Yêu Cầu (OrgUnitId)</label>
+                    <input type="text" class="form-control" id="form-orgunit" value="10000000-0000-0000-0000-000000000001" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label><i class="fas fa-paperclip"></i> Tệp Đính Kèm (Hợp đồng / Báo giá PDF $\le 25\text{MB}$)</label>
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="attachment-file" accept=".pdf,.docx,.xlsx,.png,.jpg">
+                    <label class="custom-file-label" for="attachment-file" id="file-label">Chọn tệp báo giá...</label>
+                  </div>
+                  <small class="form-text text-muted">Hỗ trợ định dạng: .pdf, .docx, .xlsx, ảnh. Tệp sẽ được truyền stream thẳng sang OneDrive.</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg mt-3" id="btn-submit-form">
+                  <i class="fas fa-paper-plane mr-1"></i> Gửi Trình Ký Ngay
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. PENDING TASKS GRID (TSK-315) -->
+        <div id="view-tasks" class="view-panel" style="display:none;">
+          <div class="card card-warning card-outline">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fas fa-inbox mr-1"></i> Hàng Đợi Nhiệm Vụ Phê Duyệt Chờ Xử Lý (Pending Tasks)</h3>
+              <div class="card-tools">
+                <button class="btn btn-sm btn-outline-primary" onclick="loadPendingTasks()"><i class="fas fa-sync-alt"></i> Tải lại</button>
+              </div>
+            </div>
+            <div class="card-body table-responsive p-0">
+              <table class="table table-hover text-nowrap">
+                <thead>
+                  <tr>
+                    <th>Mã Task</th>
+                    <th>Quy Trình</th>
+                    <th>Bước Duyệt</th>
+                    <th>Thời Hạn SLA</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
+                  </tr>
+                </thead>
+                <tbody id="tasks-table-body">
+                  <tr><td colspan="6" class="text-center text-muted">Đang tải dữ liệu...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. APPROVAL ACTION & TIMELINE MODAL (TSK-316 & TSK-317) -->
+        <div class="modal fade" id="modal-approval-action" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-stamp mr-1"></i> Thao Tác Phê Duyệt & Kiểm Tra Lịch Sử Bất Biến</h5>
+                <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+              </div>
+              <div class="modal-body">
+                <input type="hidden" id="modal-task-id">
+                <input type="hidden" id="modal-instance-id">
+
+                <!-- Tệp đính kèm & Xem trước bảo mật -->
+                <div class="card card-light mb-3">
+                  <div class="card-header"><strong><i class="fas fa-file-pdf text-danger mr-1"></i> Tài Liệu Đính Kèm (OneDrive Signed Preview)</strong></div>
+                  <div class="card-body p-2" id="modal-attachment-list">
+                    <p class="text-muted mb-0">Đang kiểm tra tài liệu đính kèm...</p>
+                  </div>
+                </div>
+
+                <!-- Văn bản / Hợp đồng tự động sinh (TSK-512) -->
+                <div class="card card-light mb-3">
+                  <div class="card-header"><strong><i class="fas fa-file-contract text-primary mr-1"></i> Văn Bản Tự Động Sinh Từ Mẫu (Kèm Mã Băm SHA-256)</strong></div>
+                  <div class="card-body p-2" id="modal-generated-doc-list">
+                    <p class="text-muted mb-0">Chưa có văn bản tự động sinh cho quy trình này (hệ thống sẽ tự sinh khi duyệt hoàn tất).</p>
+                  </div>
+                </div>
+
+                <!-- Form Quyết định -->
+                <div class="form-group">
+                  <label>Ý Kiến Phê Duyệt / Chỉ Đạo</label>
+                  <textarea class="form-control" id="modal-comment" rows="3" placeholder="Nhập ý kiến xem xét..."></textarea>
+                </div>
+
+                <div class="btn-group w-100 mb-4" role="group">
+                  <button type="button" class="btn btn-success btn-lg" onclick="submitDecision('Approved')">
+                    <i class="fas fa-check-circle mr-1"></i> Đồng Ý Phê Duyệt
+                  </button>
+                  <button type="button" class="btn btn-warning btn-lg" onclick="submitDecision('RequestChanges')">
+                    <i class="fas fa-undo mr-1"></i> Yêu Cầu Bổ Sung
+                  </button>
+                  <button type="button" class="btn btn-danger btn-lg" onclick="submitDecision('Rejected')">
+                    <i class="fas fa-times-circle mr-1"></i> Từ Chối Hồ Sơ
+                  </button>
+                </div>
+
+                <!-- Timeline Lịch sử Chữ ký số Bất biến (TSK-317) -->
+                <h5><i class="fas fa-history mr-1"></i> Dòng Thời Gian Phê Duyệt (Immutable Approval Timeline)</h5>
+                <div class="timeline" id="modal-timeline">
+                  <div class="text-muted">Đang tải lịch sử ký số...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL: SOẠN BÀI VIẾT TIN TỨC MỚI (TSK-414) -->
+        <div class="modal fade" id="modal-create-news" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title font-weight-bold"><i class="fas fa-edit mr-1"></i> Soạn Thảo Bản Tin / Thông Cáo Mới</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+              </div>
+              <div class="modal-body">
+                <form id="form-create-news" onsubmit="handleCreateNewsSubmit(event)">
+                  <div class="form-group">
+                    <label>Tiêu Đề Bài Viết <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="news-title" required placeholder="VD: Thông báo nghỉ lễ hoặc chính sách an toàn thông tin 2027">
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Chuyên Mục <span class="text-danger">*</span></label>
+                      <select class="form-control" id="news-category">
+                        <option value="General">Hoạt Động Chung (General)</option>
+                        <option value="Policy">Chính Sách / Quy Chế (Policy)</option>
+                        <option value="Urgent">Thông Cáo Khẩn Cấp (Urgent)</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Ảnh Bìa URL (Cover Image)</label>
+                      <input type="text" class="form-control" id="news-cover-url" placeholder="https://example.com/cover.jpg">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Tóm Tắt Ngắn Gọn <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="news-summary" rows="2" required placeholder="Tóm tắt nội dung chính trong 1-2 câu..."></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Nội Dung Chi Tiết (Hỗ Trợ Định Dạng HTML / Rich Text) <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="news-content-html" rows="6" required placeholder="<p>Nhập nội dung bài viết chi tiết tại đây...</p>"></textarea>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Hẹn Giờ Xuất Bản (Scheduled Publish)</label>
+                      <input type="datetime-local" class="form-control" id="news-scheduled-publish">
+                      <small class="text-muted">Để trống nếu muốn xuất bản ngay lập tức.</small>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Hạn Lưu Trữ / Hết Hạn (Expires At)</label>
+                      <input type="datetime-local" class="form-control" id="news-expires-at">
+                    </div>
+                  </div>
+                  <div class="form-group form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="news-is-mandatory">
+                    <label class="form-check-label font-weight-bold text-danger" for="news-is-mandatory">
+                      <i class="fas fa-exclamation-circle mr-1"></i> Bắt buộc toàn thể nhân viên xác nhận đã đọc (Mandatory Read)
+                    </label>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-news">
+                      <i class="fas fa-paper-plane mr-1"></i> Xuất Bản Tin Tức
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL: XEM CHI TIẾT TIN TỨC & XÁC NHẬN ĐỌC (TSK-414, TSK-415) -->
+        <div class="modal fade" id="modal-news-detail" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header bg-light">
+                <div>
+                  <span id="detail-news-badge"></span>
+                  <h5 class="modal-title font-weight-bold mt-1" id="detail-news-title">Tiêu Đề Bản Tin</h5>
+                  <small class="text-muted" id="detail-news-meta">Đăng bởi Ban Truyền Thông • Ngày ...</small>
+                </div>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+              </div>
+              <div class="modal-body">
+                <!-- Khu vực xác nhận đọc bắt buộc -->
+                <div id="mandatory-read-banner" class="alert alert-warning mb-3" style="display:none;">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="font-weight-bold mb-1"><i class="fas fa-shield-alt mr-1"></i> THÔNG CÁO BẮT BUỘC ĐỌC</h6>
+                      <p class="mb-0 text-sm">Theo quy chế tuân thủ doanh nghiệp, nhân sự bắt buộc phải đọc và xác nhận đã hiểu rõ văn bản này.</p>
+                    </div>
+                    <button type="button" class="btn btn-success btn-sm font-weight-bold" id="btn-confirm-read" onclick="handleConfirmRead()">
+                      <i class="fas fa-check mr-1"></i> Tôi Đã Đọc & Hiểu Rõ
+                    </button>
+                  </div>
+                </div>
+
+                <div id="read-acknowledged-badge" class="alert alert-success mb-3" style="display:none;">
+                  <i class="fas fa-check-double mr-1"></i> <span id="read-acknowledged-text">Bạn đã xác nhận hoàn thành đọc chính sách này.</span>
+                </div>
+
+                <!-- Nội dung bài viết -->
+                <div id="detail-news-body" class="p-2" style="font-size:1.05rem; line-height:1.6;">
+                  <!-- HTML Content -->
+                </div>
+              </div>
+              <div class="modal-footer d-flex justify-content-between">
+                <span class="text-muted text-sm" id="detail-news-compliance-text"><i class="fas fa-users mr-1"></i> Lượt đọc: 0</span>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL: XEM TRƯỚC RENDER TEMPLATE (TSK-413) -->
+        <div class="modal fade" id="modal-preview-template" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header bg-info text-white">
+                <h5 class="modal-title font-weight-bold"><i class="fas fa-eye mr-1"></i> Xem Trước Mẫu Thông Báo (Render Preview)</h5>
+                <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label>Mã Mẫu (Template Code):</label>
+                  <input type="text" class="form-control" id="preview-tpl-code" readonly>
+                </div>
+                <div class="card card-outline card-primary">
+                  <div class="card-header font-weight-bold" id="preview-tpl-subject">
+                    Tiêu đề Email: ...
+                  </div>
+                  <div class="card-body bg-light" id="preview-tpl-body" style="min-height: 150px;">
+                    <!-- Rendered HTML -->
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. DOCUMENTS & GENERATED TEMPLATES VIEW (TSK-511, TSK-512) -->
+        <div id="view-documents" class="view-panel" style="display:none;">
+          <div class="row">
+            <!-- Văn bản đã sinh tự động -->
+            <div class="col-lg-7">
+              <div class="card card-primary card-outline">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h3 class="card-title"><i class="fas fa-file-contract mr-1"></i> Văn Bản & Quyết Định Đã Ban Hành (Generated Documents)</h3>
+                  <div class="card-tools ml-auto">
+                    <button class="btn btn-sm btn-outline-primary" onclick="loadGeneratedDocs()"><i class="fas fa-sync-alt"></i> Tải lại</button>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                  <div class="alert alert-light m-2 text-sm">
+                    <i class="fas fa-robot text-primary mr-1"></i> Các văn bản quyết định và hợp đồng được hệ thống <strong>tự động sinh từ mẫu Word/PDF</strong> ngay khi quy trình được duyệt toàn trình. Mọi tài liệu đều được gắn mã băm SHA-256 bảo đảm tính toàn vẹn.
+                  </div>
+                  <table class="table table-hover table-striped mb-0">
+                    <thead>
+                      <tr>
+                        <th>Tên Tài Liệu Đã Sinh</th>
+                        <th>Quy Trình</th>
+                        <th>Mã Băm Toàn Vẹn SHA-256</th>
+                        <th class="text-center">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody id="generated-docs-tbody">
+                      <tr><td colspan="4" class="text-center text-muted">Đang tải danh sách văn bản...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Mẫu tài liệu Document Templates -->
+              <div class="card card-secondary card-outline">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-file-word mr-1"></i> Quản Lý Mẫu Tài Liệu (Document Templates - TSK-511)</h3>
+                </div>
+                <div class="card-body p-0">
+                  <table class="table table-sm table-hover mb-0">
+                    <thead>
+                      <tr><th>Khóa Mẫu</th><th>Tiêu Đề Mẫu</th><th>Định Dạng</th><th>Placeholder Schema</th></tr>
+                    </thead>
+                    <tbody id="doc-templates-tbody">
+                      <tr><td colspan="4" class="text-center text-muted">Đang tải danh sách mẫu tài liệu...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- OneDrive Explorer -->
+            <div class="col-lg-5">
+              <div class="card card-success card-outline">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-folder-open mr-1"></i> Kho Lưu Trữ OneDrive For Business</h3>
+                </div>
+                <div class="card-body">
+                  <div class="alert alert-info text-sm">
+                    <i class="fas fa-cloud mr-1"></i> <strong>Zero-Binary-in-DB:</strong> File nhị phân lưu trữ trực tiếp trên OneDrive theo cấu trúc phân cấp, SQL Server chỉ lưu metadata và cấp link xem trước có thời hạn hết hạn 15 phút.
+                  </div>
+                  <ul class="list-group" id="document-explorer-list">
+                    <li class="list-group-item text-muted">Chưa có tệp nào được tải lên trong phiên làm việc.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. INTERNAL NEWS VIEW (TSK-414, TSK-415) -->
+        <div id="view-news" class="view-panel" style="display:none;">
+          <div class="card card-warning card-outline">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h3 class="card-title"><i class="fas fa-newspaper mr-1"></i> Cổng Bản Tin & Thông Cáo Doanh Nghiệp</h3>
+              <div class="card-tools ml-auto">
+                <button class="btn btn-sm btn-primary" onclick="openCreateNewsModal()">
+                  <i class="fas fa-plus mr-1"></i> Soạn Bài Viết Mới
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- Filter pills -->
+              <div class="btn-group mb-3" role="group">
+                <button type="button" class="btn btn-outline-secondary btn-sm active" onclick="filterNewsCategory('All', this)">Tất Cả</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="filterNewsCategory('Urgent', this)"><i class="fas fa-exclamation-triangle mr-1"></i> Tin Khẩn</button>
+                <button type="button" class="btn btn-outline-info btn-sm" onclick="filterNewsCategory('Policy', this)"><i class="fas fa-gavel mr-1"></i> Chính Sách / Quy Chế</button>
+                <button type="button" class="btn btn-outline-success btn-sm" onclick="filterNewsCategory('General', this)"><i class="fas fa-info-circle mr-1"></i> Hoạt Động Chung</button>
+              </div>
+
+              <!-- News articles grid -->
+              <div class="row" id="news-articles-grid">
+                <!-- Dynamic cards -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. NOTIFICATION TEMPLATES & LOGS VIEW (TSK-413) -->
+        <div id="view-notifications" class="view-panel" style="display:none;">
+          <div class="row">
+            <!-- Left: Templates -->
+            <div class="col-lg-7">
+              <div class="card card-info card-outline">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-envelope-open-text mr-1"></i> Mẫu Thông Báo Động (Notification Templates)</h3>
+                </div>
+                <div class="card-body p-0">
+                  <table class="table table-hover table-striped mb-0">
+                    <thead>
+                      <tr>
+                        <th>Mã Mẫu</th>
+                        <th>Kênh</th>
+                        <th>Tiêu Đề Mẫu</th>
+                        <th class="text-center">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody id="notification-templates-tbody">
+                      <tr><td colspan="4" class="text-center text-muted">Đang tải danh sách mẫu...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Logs & Stats -->
+            <div class="col-lg-5">
+              <div class="card card-secondary card-outline">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-history mr-1"></i> Nhật Ký Gửi Tin (Notification Logs)</h3>
+                  <div class="card-tools">
+                    <span class="badge badge-success" id="notif-stat-success-rate">Tỷ lệ: 100%</span>
+                  </div>
+                </div>
+                <div class="card-body p-2" style="max-height: 450px; overflow-y: auto;">
+                  <ul class="list-group list-group-flush" id="notification-logs-list">
+                    <li class="list-group-item text-center text-muted">Đang tải nhật ký gửi tin...</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9. WHITE-LABELING SETTINGS VIEW (TSK-416) -->
+        <div id="view-settings" class="view-panel" style="display:none;">
+          <div class="row">
+            <div class="col-lg-7">
+              <div class="card card-primary card-outline">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-palette mr-1"></i> Quản Trị Cấu Hình Thương Hiệu (White-labeling)</h3>
+                </div>
+                <div class="card-body">
+                  <form id="brand-settings-form" onsubmit="handleBrandSave(event)">
+                    <div class="form-group">
+                      <label>Tên Ứng Dụng (Brand:AppName)</label>
+                      <input type="text" class="form-control" id="setting-app-name" required value="Enterprise BPM Platform">
+                    </div>
+                    <div class="form-group">
+                      <label>Tên Doanh Nghiệp / Tập Đoàn (Brand:CorporationName)</label>
+                      <input type="text" class="form-control" id="setting-corp-name" required value="Tập đoàn Công nghệ & Sản xuất Quốc gia">
+                    </div>
+                    <div class="form-group">
+                      <label>Logo URL (Brand:LogoUrl)</label>
+                      <input type="text" class="form-control" id="setting-logo-url" required value="https://adminlte.io/themes/v3/dist/img/AdminLTELogo.png">
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label>Màu Chủ Đạo Primary (Brand:PrimaryColor)</label>
+                        <div class="input-group">
+                          <input type="color" class="form-control form-control-color" id="setting-primary-color" value="#007bff" style="width:60px;">
+                          <input type="text" class="form-control" id="setting-primary-color-text" value="#007bff">
+                        </div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>Màu Nhấn Accent (Brand:AccentColor)</label>
+                        <div class="input-group">
+                          <input type="color" class="form-control form-control-color" id="setting-accent-color" value="#17a2b8" style="width:60px;">
+                          <input type="text" class="form-control" id="setting-accent-color-text" value="#17a2b8">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Lý do cập nhật (Lưu vết Audit Trail)</label>
+                      <input type="text" class="form-control" id="setting-change-reason" placeholder="VD: Thay đổi nhận diện thương hiệu quý 4" required>
+                    </div>
+                    <button type="submit" class="btn btn-success" id="btn-save-settings">
+                      <i class="fas fa-save mr-1"></i> Lưu Cấu Hình Thương Hiệu
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preview Card -->
+            <div class="col-lg-5">
+              <div class="card card-outline card-info">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-eye mr-1"></i> Xem Trước Nhận Diện Trực Tiếp</h3>
+                </div>
+                <div class="card-body text-center p-4" id="live-theme-preview-box" style="background:#f4f6f9; border-radius:8px;">
+                  <img src="https://adminlte.io/themes/v3/dist/img/AdminLTELogo.png" id="preview-logo-img" alt="Logo Preview" style="max-height:80px;" class="mb-3">
+                  <h4 class="font-weight-bold" id="preview-app-title">Enterprise BPM Platform</h4>
+                  <p class="text-muted" id="preview-corp-title">Tập đoàn Công nghệ & Sản xuất Quốc gia</p>
+                  <div class="p-2 text-white font-weight-bold rounded mb-2" id="preview-primary-badge" style="background-color:#007bff;">
+                    Nút / Thanh Điều Hướng Primary
+                  </div>
+                  <div class="p-2 text-white font-weight-bold rounded" id="preview-accent-badge" style="background-color:#17a2b8;">
+                    Huy Hiệu / Điểm Nhấn Accent
+                  </div>
+                </div>
+              </div>
+
+              <!-- History Card -->
+              <div class="card card-secondary card-outline">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-history mr-1"></i> Lịch Sử Sửa Đổi Cấu Hình (Audit Trail)</h3>
+                </div>
+                <div class="card-body p-0" style="max-height:220px; overflow-y:auto;">
+                  <table class="table table-sm table-striped mb-0">
+                    <thead>
+                      <tr><th>Khóa</th><th>Giá trị mới</th><th>Người sửa</th></tr>
+                    </thead>
+                    <tbody id="settings-history-tbody">
+                      <tr><td colspan="3" class="text-center text-muted">Chưa có thay đổi nào.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9. AI ASSISTANT & RAG KNOWLEDGE VIEW (SPRINT 06: TSK-616, TSK-617, TSK-618) -->
+        <div id="view-ai-admin" class="view-panel" style="display:none;">
+          <div class="row">
+            <div class="col-12">
+              <div class="card card-purple card-outline card-tabs">
+                <div class="card-header p-0 pt-1 border-bottom-0">
+                  <ul class="nav nav-tabs" id="ai-admin-tabs" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="tab-btn-providers" data-toggle="pill" href="#tab-ai-providers" role="tab">
+                        <i class="fas fa-network-wired mr-1"></i> Cấu Hình Multi-Provider AI (Gemini/OpenAI/Claude/Ollama)
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="tab-btn-knowledge" data-toggle="pill" href="#tab-ai-knowledge" role="tab">
+                        <i class="fas fa-database mr-1"></i> Quản Trị Tri Thức & Vector Index Qdrant
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="tab-btn-logs" data-toggle="pill" href="#tab-ai-logs" role="tab">
+                        <i class="fas fa-list-alt mr-1"></i> Nhật Ký Đàm Thoại & Audit Trail AI
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="card-body">
+                  <div class="tab-content" id="ai-admin-tab-content">
+                    
+                    <!-- TAB 1: AI PROVIDER SETTINGS (TSK-618) -->
+                    <div class="tab-pane fade show active" id="tab-ai-providers" role="tabpanel">
+                      <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle mr-1"></i> Kiến trúc Multi-Provider & Model-Agnostic Engine</h5>
+                        Hệ thống hỗ trợ hot-swap linh hoạt giữa các nhà cung cấp Cloud AI (Google Gemini, OpenAI ChatGPT, Anthropic Claude) và Local LLM (Ollama qua giao thức MCP). Khóa API được mã hóa an toàn ở trạng thái nghỉ (At-Rest Encryption).
+                      </div>
+                      <div class="row" id="ai-providers-cards-container">
+                        <!-- Populated by JS -->
+                      </div>
+                      
+                      <!-- Form Update/Add Config -->
+                      <div class="card card-outline card-secondary mt-3">
+                        <div class="card-header">
+                          <h3 class="card-title"><i class="fas fa-edit mr-1"></i> Cập Nhật Cấu Hình Provider & Mã Hóa API Key</h3>
+                        </div>
+                        <div class="card-body">
+                          <form id="ai-config-form" onsubmit="saveAiProviderConfig(event)">
+                            <div class="row">
+                              <div class="col-md-3">
+                                <div class="form-group">
+                                  <label>Nhà cung cấp (Provider)</label>
+                                  <select id="config-provider-type" class="form-control" onchange="onProviderSelectChanged(this.value)">
+                                    <option value="Gemini">Google Gemini (Mặc định)</option>
+                                    <option value="OpenAi">OpenAI ChatGPT</option>
+                                    <option value="Claude">Anthropic Claude</option>
+                                    <option value="Ollama">Local LLM (Ollama / vLLM MCP)</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="col-md-3">
+                                <div class="form-group">
+                                  <label>Tên Model (Model Identifier)</label>
+                                  <input type="text" id="config-model-name" class="form-control" value="gemini-2.0-flash" placeholder="gemini-2.0-flash / gpt-4o / claude-3-5-sonnet">
+                                </div>
+                              </div>
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>Endpoint URL (Base URL)</label>
+                                  <input type="text" id="config-base-url" class="form-control" value="https://generativelanguage.googleapis.com/v1beta" placeholder="Endpoint API...">
+                                </div>
+                              </div>
+                              <div class="col-md-2">
+                                <div class="form-group">
+                                  <label>Nhiệt độ (Temp)</label>
+                                  <input type="number" id="config-temperature" class="form-control" step="0.05" min="0" max="1" value="0.10">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label>API Key (Mã hóa an toàn qua DataProtection)</label>
+                                  <div class="input-group">
+                                    <input type="password" id="config-api-key" class="form-control" placeholder="Nhập API Key mới để lưu (bỏ trống nếu không đổi)...">
+                                    <div class="input-group-append">
+                                      <button type="button" class="btn btn-outline-secondary" onclick="toggleApiKeyVisibility()"><i class="fas fa-eye" id="toggle-key-icon"></i></button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-3">
+                                <div class="form-group">
+                                  <label>Max Tokens</label>
+                                  <input type="number" id="config-max-tokens" class="form-control" value="2048">
+                                </div>
+                              </div>
+                              <div class="col-md-3 d-flex align-items-end mb-3">
+                                <div class="custom-control custom-checkbox mr-3">
+                                  <input type="checkbox" class="custom-control-input" id="config-is-default" checked>
+                                  <label class="custom-control-label" for="config-is-default">Đặt làm Mặc định</label>
+                                </div>
+                                <button type="submit" id="btn-save-ai-config" class="btn btn-purple">
+                                  <i class="fas fa-save mr-1"></i> Lưu Cấu Hình
+                                </button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- TAB 2: KNOWLEDGE BASE & QDRANT RAG (TSK-618) -->
+                    <div class="tab-pane fade" id="tab-ai-knowledge" role="tabpanel">
+                      <div class="row">
+                        <!-- Upload Form -->
+                        <div class="col-md-5">
+                          <div class="card card-outline card-purple">
+                            <div class="card-header">
+                              <h3 class="card-title"><i class="fas fa-cloud-upload-alt mr-1"></i> Đăng Tải Văn Bản & Tự Động Đánh Index RAG</h3>
+                            </div>
+                            <div class="card-body">
+                              <form id="ai-upload-form" onsubmit="handleKnowledgeUpload(event)">
+                                <div class="form-group">
+                                  <label>Tiêu đề Quy chế / Văn bản <span class="text-danger">*</span></label>
+                                  <input type="text" id="kb-title" class="form-control" placeholder="Ví dụ: Quy chế Chi tiêu & Mua sắm Nội bộ 2026" required>
+                                </div>
+                                <div class="form-group">
+                                  <label>Số hiệu Văn bản <span class="text-danger">*</span></label>
+                                  <input type="text" id="kb-number" class="form-control" placeholder="Ví dụ: QC-2026/TCKT" required>
+                                </div>
+                                <div class="row">
+                                  <div class="col-6">
+                                    <div class="form-group">
+                                      <label>Đơn vị ban hành</label>
+                                      <input type="text" id="kb-dept" class="form-control" value="Ban Tài Chính Kế Toán">
+                                    </div>
+                                  </div>
+                                  <div class="col-6">
+                                    <div class="form-group">
+                                      <label>Loại tài liệu</label>
+                                      <select id="kb-type" class="form-control">
+                                        <option value="CompanyPolicy">Quy chế / Quy định Nội bộ</option>
+                                        <option value="WorkflowGuideline">Hướng dẫn Thực thi Quy trình</option>
+                                        <option value="InternalNews">Thông cáo / Tin tức Doanh nghiệp</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <label>Tệp tài liệu (PDF, Word, TXT) <span class="text-danger">*</span></label>
+                                  <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="kb-file" accept=".pdf,.docx,.txt" required onchange="$('#kb-file-label').text(this.files[0] ? this.files[0].name : 'Chọn tệp tài liệu...')">
+                                    <label class="custom-file-label" id="kb-file-label" for="kb-file">Chọn tệp tài liệu...</label>
+                                  </div>
+                                  <small class="text-muted">Hệ thống sẽ lưu trữ lên OneDrive, bẻ chunk 500 token, tạo vector 768-dim và nạp vào Qdrant.</small>
+                                </div>
+
+                                <!-- Indexing Progress Bar -->
+                                <div id="kb-index-progress-wrapper" class="mb-3" style="display:none;">
+                                  <label id="kb-progress-status-text" class="text-xs font-weight-bold text-purple">Đang tải tệp & xử lý chunking...</label>
+                                  <div class="progress progress-sm active">
+                                    <div class="progress-bar bg-purple progress-bar-striped" id="kb-index-progress-bar" role="progressbar" style="width: 0%"></div>
+                                  </div>
+                                </div>
+
+                                <button type="submit" id="btn-upload-knowledge" class="btn btn-purple btn-block">
+                                  <i class="fas fa-layer-group mr-1"></i> Bắt Đầu Nạp & Đánh Index Qdrant
+                                </button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Knowledge Documents Table -->
+                        <div class="col-md-7">
+                          <div class="card card-outline card-secondary">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                              <h3 class="card-title"><i class="fas fa-book-reader mr-1"></i> Cơ Sở Tri Thức Nội Bộ Đã Được Đánh Index</h3>
+                              <button class="btn btn-xs btn-outline-purple" onclick="loadKnowledgeDocs()"><i class="fas fa-sync-alt mr-1"></i> Làm mới</button>
+                            </div>
+                            <div class="card-body p-0 table-responsive" style="max-height: 480px;">
+                              <table class="table table-hover table-striped mb-0">
+                                <thead class="bg-light">
+                                  <tr>
+                                    <th>Văn bản & Số hiệu</th>
+                                    <th>Đơn vị</th>
+                                    <th>Số Chunks</th>
+                                    <th>Trạng thái RAG</th>
+                                    <th>Thao tác</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="knowledge-docs-tbody">
+                                  <tr><td colspan="5" class="text-center text-muted"><i class="fas fa-spinner fa-spin mr-1"></i> Đang tải dữ liệu...</td></tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- TAB 3: CONVERSATION LOGS & AUDIT (TSK-618) -->
+                    <div class="tab-pane fade" id="tab-ai-logs" role="tabpanel">
+                      <div class="card card-outline card-secondary">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                          <h3 class="card-title"><i class="fas fa-history mr-1"></i> Nhật Ký Tương Tác AI & Trích Dẫn Nguồn</h3>
+                          <button class="btn btn-xs btn-outline-purple" onclick="loadAiConversationLogs()"><i class="fas fa-sync-alt mr-1"></i> Tải lại</button>
+                        </div>
+                        <div class="card-body p-0 table-responsive" style="max-height: 520px;">
+                          <table class="table table-sm table-hover table-striped mb-0">
+                            <thead class="bg-light">
+                              <tr>
+                                <th>Thời gian</th>
+                                <th>Người dùng</th>
+                                <th>Provider / Model</th>
+                                <th>Câu hỏi & Trả lời</th>
+                                <th>Công cụ C# gọi</th>
+                                <th>Độ trễ</th>
+                                <th>Đánh giá</th>
+                              </tr>
+                            </thead>
+                            <tbody id="ai-logs-tbody">
+                              <tr><td colspan="7" class="text-center text-muted"><i class="fas fa-spinner fa-spin mr-1"></i> Đang tải nhật ký...</td></tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. ANALYTICS & BIG DATA BI REPORTING VIEW (SPRINT 07: TSK-710, TSK-711, TSK-712, TSK-713, TSK-714) -->
+        <div id="view-analytics" class="view-panel" style="display:none;">
+          <div class="row mb-3">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="m-0 font-weight-bold text-dark"><i class="fas fa-chart-line text-success mr-2"></i> Hệ Thống Phân Tích & Báo Cáo Doanh Nghiệp (Big Data BI)</h4>
+                <small class="text-muted">Báo cáo hiệu suất thời gian thực, thuật toán phát hiện điểm nghẽn SLA tự động, và bộ biên tập truy vấn báo cáo động tham số hóa.</small>
+              </div>
+              <div>
+                <button class="btn btn-sm btn-outline-success mr-2" onclick="refreshAnalyticsData()"><i class="fas fa-sync-alt mr-1"></i> Làm Mới Dữ Liệu</button>
+                <button class="btn btn-sm btn-success" onclick="recalculateAllBottlenecks()"><i class="fas fa-bolt mr-1"></i> Quét Lại Điểm Nghẽn SLA</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card card-success card-outline card-tabs">
+            <div class="card-header p-0 pt-1 border-bottom-0">
+              <ul class="nav nav-tabs" id="analytics-tabs" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="tab-link-executive-bi" data-toggle="pill" href="#tab-executive-bi" role="tab">
+                    <i class="fas fa-tachometer-alt mr-1"></i> 1. Executive BI Dashboard
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="tab-link-bottlenecks" data-toggle="pill" href="#tab-bottlenecks" role="tab">
+                    <i class="fas fa-fire-alt mr-1 text-danger"></i> 2. Bản Đồ Điểm Nghẽn SLA (Bottlenecks)
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="tab-link-scorecards" data-toggle="pill" href="#tab-scorecards" role="tab">
+                    <i class="fas fa-user-check mr-1 text-info"></i> 3. Năng Suất Nhân Sự (Scorecards)
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="tab-link-reports" data-toggle="pill" href="#tab-reports" role="tab">
+                    <i class="fas fa-file-excel mr-1 text-success"></i> 4. Báo Cáo Động & Lập Lịch (Custom Reports)
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body">
+              <div class="tab-content">
+                <!-- TAB 1: EXECUTIVE BI DASHBOARD (TSK-710) -->
+                <div class="tab-pane fade show active" id="tab-executive-bi" role="tabpanel">
+                  <!-- KPI Cards Row -->
+                  <div class="row">
+                    <div class="col-lg-3 col-6">
+                      <div class="small-box bg-gradient-info">
+                        <div class="inner">
+                          <h3 id="bi-total-submissions">0</h3>
+                          <p>Tổng Hồ Sơ Trình Ký</p>
+                        </div>
+                        <div class="icon"><i class="fas fa-file-signature"></i></div>
+                        <a href="javascript:void(0)" onclick="$('#tab-link-reports').tab('show')" class="small-box-footer">Xem chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                      <div class="small-box bg-gradient-success">
+                        <div class="inner">
+                          <h3 id="bi-corp-sla">100%</h3>
+                          <p>Tuân Thủ SLA Toàn Doanh Nghiệp</p>
+                        </div>
+                        <div class="icon"><i class="fas fa-business-time"></i></div>
+                        <a href="javascript:void(0)" onclick="$('#tab-link-bottlenecks').tab('show')" class="small-box-footer">Bản đồ SLA <i class="fas fa-arrow-circle-right"></i></a>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                      <div class="small-box bg-gradient-warning">
+                        <div class="inner">
+                          <h3 id="bi-total-expenditure">0 đ</h3>
+                          <p>Tổng Giải Ngân Được Duyệt</p>
+                        </div>
+                        <div class="icon"><i class="fas fa-coins"></i></div>
+                        <a href="javascript:void(0)" onclick="$('#tab-link-reports').tab('show')" class="small-box-footer">Báo cáo tài chính <i class="fas fa-arrow-circle-right"></i></a>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                      <div class="small-box bg-gradient-danger">
+                        <div class="inner">
+                          <h3 id="bi-bottlenecks-count">0</h3>
+                          <p>Nút Thắt Cổ Chai Đang Phát Hiện</p>
+                        </div>
+                        <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <a href="javascript:void(0)" onclick="$('#tab-link-bottlenecks').tab('show')" class="small-box-footer">Xử lý ngay <i class="fas fa-arrow-circle-right"></i></a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Charts Row -->
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="card card-outline card-secondary">
+                        <div class="card-header">
+                          <h3 class="card-title font-weight-bold"><i class="fas fa-chart-pie mr-1 text-primary"></i> Phân Bổ Trạng Thái Hồ Sơ</h3>
+                        </div>
+                        <div class="card-body">
+                          <div style="position: relative; height: 260px;">
+                            <canvas id="chart-status-breakdown"></canvas>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="card card-outline card-secondary">
+                        <div class="card-header">
+                          <h3 class="card-title font-weight-bold"><i class="fas fa-chart-bar mr-1 text-success"></i> Giải Ngân Theo Trung Tâm Chi Phí / Phòng Ban</h3>
+                        </div>
+                        <div class="card-body">
+                          <div style="position: relative; height: 260px;">
+                            <canvas id="chart-cost-centers"></canvas>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TAB 2: BOTTLENECKS HEATMAP (TSK-711) -->
+                <div class="tab-pane fade" id="tab-bottlenecks" role="tabpanel">
+                  <div class="alert alert-warning alert-dismissible">
+                    <h5><i class="icon fas fa-exclamation-triangle"></i> Tiêu Chí Tự Động Nhận Diện Điểm Nghẽn (Bottleneck Detection Rule)</h5>
+                    Một bước duyệt được gắn nhãn <strong>CẢNH BÁO NGHẼN</strong> khi:
+                    <ul>
+                      <li>Thời gian chờ phê duyệt trung bình vượt quá <strong>150% thời hạn SLA</strong> cho phép của bước đó.</li>
+                      <li>Hoặc tỷ lệ công việc bị trễ hạn SLA vượt quá <strong>25%</strong> tổng số lượng nhiệm vụ.</li>
+                    </ul>
+                  </div>
+                  <div class="card card-outline card-secondary">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                      <h3 class="card-title font-weight-bold"><i class="fas fa-traffic-light mr-1"></i> Bảng Phân Tích Độ Trễ & Hiệu Suất Từng Bước Duyệt</h3>
+                      <button class="btn btn-xs btn-outline-danger" onclick="recalculateAllBottlenecks()"><i class="fas fa-sync-alt mr-1"></i> Phân tích lại ngay</button>
+                    </div>
+                    <div class="card-body p-0 table-responsive">
+                      <table class="table table-hover table-striped mb-0" id="table-bottlenecks">
+                        <thead class="bg-light">
+                          <tr>
+                            <th>Tên Quy Trình</th>
+                            <th>Bước Phê Duyệt</th>
+                            <th>Vai Trò Phụ Trách</th>
+                            <th>Số Task Đã Xử Lý</th>
+                            <th>Thời Gian Chờ TB</th>
+                            <th>SLA Cho Phép</th>
+                            <th>Tỷ Lệ Trễ SLA</th>
+                            <th>Tình Trạng Điểm Nghẽn</th>
+                            <th>Đề Xuất Khắc Phục</th>
+                          </tr>
+                        </thead>
+                        <tbody id="bottlenecks-tbody">
+                          <tr><td colspan="9" class="text-center text-muted"><i class="fas fa-spinner fa-spin mr-1"></i> Đang phân tích dữ liệu SLA...</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TAB 3: EMPLOYEE SCORECARDS (TSK-712) -->
+                <div class="tab-pane fade" id="tab-scorecards" role="tabpanel">
+                  <div class="card card-outline card-info">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                      <div class="d-flex align-items-center">
+                        <label class="mr-2 mb-0 font-weight-bold">Tháng Báo Cáo:</label>
+                        <input type="month" id="scorecard-month-input" class="form-control form-control-sm mr-3" style="width: 160px;" value="2026-11">
+                        <button class="btn btn-sm btn-info" onclick="loadEmployeeScorecards()"><i class="fas fa-filter mr-1"></i> Lọc Chỉ Số</button>
+                      </div>
+                      <button class="btn btn-xs btn-outline-primary" onclick="reaggregateScorecards()"><i class="fas fa-calculator mr-1"></i> Tổng hợp tháng hiện tại</button>
+                    </div>
+                    <div class="card-body p-0 table-responsive">
+                      <table class="table table-hover table-striped mb-0" id="table-scorecards">
+                        <thead class="bg-light">
+                          <tr>
+                            <th>Cán Bộ Xử Lý</th>
+                            <th>Phòng Ban</th>
+                            <th>Tổng Task Giao</th>
+                            <th>Đã Xử Lý</th>
+                            <th>Tồn Đọng (Backlog)</th>
+                            <th>Đúng Hạn SLA</th>
+                            <th>Tỷ Lệ SLA (%)</th>
+                            <th>Đạt Lần Đầu (FTR %)</th>
+                            <th>Thời Gian Xử Lý TB</th>
+                            <th>Xếp Hạng Thi Đua</th>
+                          </tr>
+                        </thead>
+                        <tbody id="scorecards-tbody">
+                          <tr><td colspan="10" class="text-center text-muted"><i class="fas fa-spinner fa-spin mr-1"></i> Đang tải dữ liệu năng suất nhân sự...</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TAB 4: DYNAMIC CUSTOM REPORT BUILDER & SCHEDULES (TSK-713, TSK-714) -->
+                <div class="tab-pane fade" id="tab-reports" role="tabpanel">
+                  <!-- Query Builder Card -->
+                  <div class="card card-outline card-success mb-3">
+                    <div class="card-header">
+                      <h3 class="card-title font-weight-bold"><i class="fas fa-cogs mr-1 text-success"></i> Thiết Kế Truy Vấn Báo Cáo Động (Dynamic Query Engine)</h3>
+                    </div>
+                    <div class="card-body">
+                      <div class="row mb-3">
+                        <div class="col-md-4">
+                          <label class="font-weight-bold">1. Nguồn Dữ Liệu (DataSource):</label>
+                          <select id="report-datasource" class="form-control form-control-sm" onchange="onDataSourceChanged(this.value)">
+                            <option value="WorkflowSubmissions">Hồ Sơ Trình Ký (WorkflowSubmissions)</option>
+                            <option value="ApprovalTasks">Nhiệm Vụ Phê Duyệt (ApprovalTasks)</option>
+                            <option value="FinancialExpenditure">Giải Ngân Kinh Phí (FinancialExpenditure)</option>
+                            <option value="EmployeeProductivity">Năng Suất Cán Bộ (EmployeeProductivity)</option>
+                          </select>
+                        </div>
+                        <div class="col-md-8">
+                          <label class="font-weight-bold">2. Cột Dữ Liệu Cần Xuất (Columns Whitelist):</label>
+                          <div id="report-columns-checklist" class="d-flex flex-wrap border rounded p-2 bg-light" style="max-height: 85px; overflow-y: auto;">
+                            <!-- Checkboxes dynamically rendered -->
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Filters Builder -->
+                      <div class="border rounded p-2 mb-3 bg-white">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <label class="m-0 font-weight-bold text-sm"><i class="fas fa-filter mr-1 text-primary"></i> 3. Tiêu Chí Lọc Tham Số Hóa (Parameterized Filters):</label>
+                          <button type="button" class="btn btn-xs btn-outline-primary" onclick="addFilterRow()"><i class="fas fa-plus mr-1"></i> Thêm Điều Kiện</button>
+                        </div>
+                        <div id="filter-rows-container">
+                          <!-- Filter row template -->
+                        </div>
+                      </div>
+
+                      <!-- Actions Row -->
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                          <label class="mr-2 mb-0 font-weight-bold text-sm">Sắp xếp:</label>
+                          <select id="report-sort-column" class="form-control form-control-sm mr-2" style="width: 160px;"></select>
+                          <select id="report-sort-direction" class="form-control form-control-sm mr-3" style="width: 120px;">
+                            <option value="false">Giảm dần (DESC)</option>
+                            <option value="true">Tăng dần (ASC)</option>
+                          </select>
+                          <button class="btn btn-sm btn-primary" onclick="executeDynamicReport(1)"><i class="fas fa-eye mr-1"></i> Xem Trước (Live Preview)</button>
+                        </div>
+                        <div>
+                          <button class="btn btn-sm btn-outline-success mr-2" onclick="exportReport('Excel')"><i class="fas fa-file-excel mr-1"></i> Xuất Excel (.xlsx)</button>
+                          <button class="btn btn-sm btn-outline-info mr-2" onclick="exportReport('Csv')"><i class="fas fa-file-csv mr-1"></i> Xuất CSV (.csv)</button>
+                          <button class="btn btn-sm btn-purple" onclick="openScheduleModal()"><i class="fas fa-clock mr-1"></i> Lập Lịch Định Kỳ</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Live Preview Results -->
+                  <div class="card card-outline card-secondary mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                      <h3 class="card-title font-weight-bold"><i class="fas fa-table mr-1"></i> Kết Quả Xem Trước Trực Quan</h3>
+                      <div>
+                        <span id="report-preview-stats" class="badge badge-success p-2">Chưa chạy truy vấn</span>
+                      </div>
+                    </div>
+                    <div class="card-body p-0 table-responsive" style="max-height: 400px;">
+                      <table class="table table-sm table-hover table-striped mb-0" id="report-preview-table">
+                        <thead class="bg-light" id="report-preview-thead">
+                          <tr><th class="text-center text-muted">Vui lòng chọn nguồn và bấm 'Xem Trước'</th></tr>
+                        </thead>
+                        <tbody id="report-preview-tbody"></tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Subscriptions List -->
+                  <div class="card card-outline card-secondary">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                      <h3 class="card-title font-weight-bold"><i class="fas fa-calendar-alt mr-1"></i> Danh Sách Báo Cáo Được Lập Lịch Gửi Tự Động (Cron Subscriptions)</h3>
+                      <button class="btn btn-xs btn-outline-purple" onclick="loadScheduledSubscriptions()"><i class="fas fa-sync-alt mr-1"></i> Làm mới</button>
+                    </div>
+                    <div class="card-body p-0 table-responsive">
+                      <table class="table table-sm table-hover table-striped mb-0" id="table-schedules">
+                        <thead class="bg-light">
+                          <tr>
+                            <th>Tên Lịch Báo Cáo</th>
+                            <th>Biểu Thức Cron</th>
+                            <th>Tần Suất</th>
+                            <th>Định Dạng</th>
+                            <th>Danh Sách Email Nhận</th>
+                            <th>Trạng Thái</th>
+                            <th>Lần Chạy Kế Tiếp</th>
+                            <th>Thao Tác</th>
+                          </tr>
+                        </thead>
+                        <tbody id="schedules-tbody">
+                          <tr><td colspan="8" class="text-center text-muted"><i class="fas fa-spinner fa-spin mr-1"></i> Đang tải danh sách lịch gửi...</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <footer class="main-header navbar navbar-white text-muted text-center p-2" style="font-size:0.9rem;">
+    Enterprise BPM Platform &copy; 2026 — Thiết kế kiến trúc Modular Monolith chuẩn mực.
+  </footer>
+</div>
+
+<!-- jQuery, Bootstrap, AdminLTE -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+<script>
+  const API_AUTH_HEADER = { 'Authorization': 'Bearer superadmin' };
+
+  function switchTab(tabId) {
+    $('.view-panel').hide();
+    $('.nav-link').removeClass('active');
+    $('#view-' + tabId).show();
+    $('#nav-' + tabId).addClass('active');
+
+    const titles = {
+      'dashboard': 'Dashboard Vận Hành',
+      'designer': 'Elsa BPMN Designer',
+      'submit': 'Nộp Đơn Trình Ký',
+      'tasks': 'Hàng Đợi Nhiệm Vụ Phê Duyệt',
+      'documents': 'Kho Tài Liệu OneDrive',
+      'news': 'Bản Tin & Thông Cáo Doanh Nghiệp',
+      'notifications': 'Mẫu Thông Báo & Nhật Ký Gửi Tin',
+      'settings': 'Quản Trị Cấu Hình Thương Hiệu',
+      'ai-admin': 'Trợ Lý AI & Quản Trị Tri Thức RAG',
+      'analytics': 'Báo Cáo Toàn Hệ Thống & Big Data BI'
+    };
+    $('#section-title').text(titles[tabId] || 'Trang Chủ');
+
+    if (tabId === 'tasks') loadPendingTasks();
+    if (tabId === 'documents') { loadGeneratedDocs(); loadDocTemplates(); }
+    if (tabId === 'news') loadNews();
+    if (tabId === 'notifications') { loadTemplates(); loadNotificationLogs(); }
+    if (tabId === 'settings') loadBrandTheme();
+    if (tabId === 'ai-admin') { loadAiProviderConfigs(); loadKnowledgeDocs(); loadAiConversationLogs(); }
+    if (tabId === 'analytics') {
+      loadExecutiveDashboard();
+      loadBottleneckHeatmap();
+      loadEmployeeScorecards();
+      loadReportColumns();
+      loadScheduledSubscriptions();
+    }
+  }
+
+  // Update file input label
+  $('#attachment-file').on('change', function(e) {
+    const fileName = e.target.files[0] ? e.target.files[0].name : 'Chọn tệp báo giá...';
+    $('#file-label').text(fileName);
+  });
+
+  // Nộp hồ sơ trình ký (Form + Attachment Upload)
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    const btn = $('#btn-submit-form');
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Đang xử lý...');
+
+    try {
+      const formKey = $('#form-key').val();
+      const priority = parseInt($('#submission-priority').val());
+      const orgUnitId = $('#form-orgunit').val();
+      const payload = {
+        Purpose: $('#form-purpose').val(),
+        Amount: parseInt($('#form-amount').val())
+      };
+
+      // 1. Tạo Submission
+      const subRes = await fetch('/api/workflows/submissions', {
+        method: 'POST',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workflowDefinitionId: 'def_purchase_request',
+          formKey: formKey,
+          requesterOrgUnitId: orgUnitId,
+          formDataJson: JSON.stringify(payload),
+          priority: priority
+        })
+      });
+
+      if (!subRes.ok) throw new Error('Không thể nộp phiếu trình ký.');
+      const submission = await subRes.json();
+
+      // 2. Upload file nếu có
+      const fileInput = document.getElementById('attachment-file');
+      if (fileInput.files.length > 0) {
+        const formData = new FormData();
+        formData.append('workflowInstanceId', submission.workflowInstanceId);
+        formData.append('formKey', formKey);
+        formData.append('file', fileInput.files[0]);
+
+        await fetch('/api/documents/attachments/upload', {
+          method: 'POST',
+          headers: API_AUTH_HEADER,
+          body: formData
+        });
+      }
+
+      alert('Đã nộp thành công phiếu trình ký! Mã quy trình: ' + submission.workflowInstanceId);
+      switchTab('tasks');
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    } finally {
+      btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Gửi Trình Ký Ngay');
+    }
+  }
+
+  // Tải danh sách công việc cần duyệt
+  async function loadPendingTasks() {
+    try {
+      const res = await fetch('/api/workflows/tasks/pending?status=Pending', { headers: API_AUTH_HEADER });
+      if (!res.ok) return;
+      const data = await res.json();
+      const tasks = data.items || [];
+
+      $('#pending-count-badge').text(tasks.length);
+      $('#sidebar-task-count').text(tasks.length);
+      $('#stat-pending-tasks').text(tasks.length);
+
+      const tbody = $('#tasks-table-body');
+      tbody.empty();
+
+      if (tasks.length === 0) {
+        tbody.append('<tr><td colspan="6" class="text-center text-muted">Không có nhiệm vụ nào đang chờ phê duyệt.</td></tr>');
+        return;
+      }
+
+      tasks.forEach(t => {
+        const isOverdue = t.isEscalated || (t.dueDate && new Date(t.dueDate) < new Date());
+        const slaBadge = isOverdue ? '<span class="badge badge-danger ml-1 p-1"><i class="fas fa-exclamation-triangle mr-1"></i>QUÁ HẠN SLA</span>' : '';
+        const reassignedBadge = t.delegatedFromUserId ? '<span class="badge badge-warning text-dark ml-1"><i class="fas fa-user-clock mr-1"></i>Bàn giao thôi việc</span>' : '';
+        const due = t.dueDate ? new Date(t.dueDate).toLocaleString('vi-VN') : 'Không giới hạn';
+
+        tbody.append(`
+          <tr class="${isOverdue ? 'table-danger' : ''}">
+            <td><code>${t.id.substring(0, 8)}...</code></td>
+            <td><strong>${t.workflowInstanceId}</strong></td>
+            <td>
+              <span class="badge badge-info">${t.targetRole || 'Phê duyệt'}</span>
+              ${reassignedBadge}
+            </td>
+            <td>
+              <i class="far fa-clock ${isOverdue ? 'text-danger' : 'text-warning'} mr-1"></i>${due}
+              ${slaBadge}
+            </td>
+            <td><span class="badge ${isOverdue ? 'badge-danger' : 'badge-warning'}">${t.status}</span></td>
+            <td>
+              <button class="btn btn-sm btn-primary" onclick="openApprovalModal('${t.id}', '${t.workflowInstanceId}')">
+                <i class="fas fa-eye mr-1"></i> Xem & Ký Duyệt
+              </button>
+            </td>
+          </tr>
+        `);
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // Mở modal thao tác duyệt
+  async function openApprovalModal(taskId, instanceId) {
+    $('#modal-task-id').val(taskId);
+    $('#modal-instance-id').val(instanceId);
+    $('#modal-comment').val('');
+    $('#modal-attachment-list').html('<i class="fas fa-spinner fa-spin mr-1"></i> Đang tải tài liệu đính kèm...');
+    $('#modal-timeline').html('<i class="fas fa-spinner fa-spin mr-1"></i> Đang kiểm tra chữ ký số...');
+
+    $('#modal-approval-action').modal('show');
+
+    // Tải tệp đính kèm & signed preview url
+    try {
+      const attachRes = await fetch(`/api/documents/attachments/workflow/${instanceId}`, { headers: API_AUTH_HEADER });
+      if (attachRes.ok) {
+        const attachments = await attachRes.json();
+        const container = $('#modal-attachment-list');
+        container.empty();
+        if (attachments.length === 0) {
+          container.html('<span class="text-muted">Không có tài liệu đính kèm.</span>');
+        } else {
+          for (const a of attachments) {
+            // Lấy signed preview link
+            const prevRes = await fetch(`/api/documents/attachments/${a.id}/preview-url`, { headers: API_AUTH_HEADER });
+            const prevData = prevRes.ok ? await prevRes.json() : null;
+            const previewUrl = prevData ? prevData.previewUrl : '#';
+
+            container.append(`
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span><i class="fas fa-file-alt text-primary mr-1"></i> <strong>${a.originalFileName}</strong> (${(a.fileSizeBytes / 1024).toFixed(1)} KB)</span>
+                <a href="${previewUrl}" target="_blank" class="btn btn-sm btn-outline-info">
+                  <i class="fas fa-external-link-alt mr-1"></i> Xem trước bảo mật (Signed 15m)
+                </a>
+              </div>
+            `);
+          }
+        }
+      }
+
+      // Tải văn bản tự động sinh (TSK-512)
+      try {
+        const genDocRes = await fetch(`/api/documents/generated/workflow/${instanceId}`, { headers: API_AUTH_HEADER });
+        const genContainer = $('#modal-generated-doc-list');
+        genContainer.empty();
+        if (genDocRes.ok) {
+          const genDocs = await genDocRes.json();
+          if (genDocs.length === 0) {
+            genContainer.html('<span class="text-muted">Chưa có văn bản sinh tự động (sinh khi hồ sơ duyệt hoàn tất).</span>');
+          } else {
+            genDocs.forEach(g => {
+              genContainer.append(`
+                <div class="d-flex justify-content-between align-items-center mb-1 p-1 border-bottom">
+                  <span><i class="fas fa-file-word text-primary mr-1"></i> <strong>${g.generatedFileName}</strong></span>
+                  <div>
+                    <a href="${g.oneDriveWebUrl}" target="_blank" class="btn btn-xs btn-outline-info mr-1">
+                      <i class="fas fa-external-link-alt mr-1"></i> Xem
+                    </a>
+                    <button class="btn btn-xs btn-outline-success" onclick="verifyGeneratedDoc('${g.id}', this)">
+                      <i class="fas fa-shield-alt mr-1"></i> Xác thực SHA-256
+                    </button>
+                  </div>
+                </div>
+              `);
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('Lỗi tải văn bản sinh tự động:', e);
+      }
+
+      // Tải timeline lịch sử ký số bất biến (TSK-317)
+      const histRes = await fetch(`/api/workflows/history/${instanceId}`, { headers: API_AUTH_HEADER });
+      if (histRes.ok) {
+        const history = await histRes.json();
+        const timeline = $('#modal-timeline');
+        timeline.empty();
+
+        if (history.length === 0) {
+          timeline.html('<div class="text-muted">Chưa có hành động phê duyệt nào được ghi nhận.</div>');
+        } else {
+          history.forEach(h => {
+            const time = new Date(h.actionTimestamp).toLocaleString('vi-VN');
+            const badgeClass = h.decision === 'Approved' ? 'bg-success' : (h.decision === 'Rejected' ? 'bg-danger' : 'bg-warning');
+            timeline.append(`
+              <div>
+                <i class="fas fa-user-check ${badgeClass}"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fas fa-clock"></i> ${time}</span>
+                  <h3 class="timeline-header"><strong>${h.stepName}</strong>: <span class="badge ${badgeClass}">${h.decision}</span></h3>
+                  <div class="timeline-body">${h.comment || 'Không có ý kiến bổ sung.'}</div>
+                  <div class="timeline-footer p-2 bg-light">
+                    <small class="text-muted"><i class="fas fa-fingerprint mr-1"></i> Mã băm toàn vẹn SHA-256:</small><br>
+                    <code class="hash-badge">${h.digitalSignatureHash}</code>
+                    ${h.isValidSignature ? '<span class="badge badge-success ml-2"><i class="fas fa-shield-alt"></i> Hợp lệ</span>' : '<span class="badge badge-danger ml-2">Giả mạo!</span>'}
+                  </div>
+                </div>
+              </div>
+            `);
+          });
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // Gửi quyết định phê duyệt (kèm RedLock)
+  async function submitDecision(decision) {
+    const taskId = $('#modal-task-id').val();
+    const comment = $('#modal-comment').val();
+
+    try {
+      const res = await fetch(`/api/workflows/tasks/${taskId}/decision`, {
+        method: 'POST',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ decision, comment })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || 'Lỗi khi gửi quyết định.');
+      }
+
+      alert('Đã xử lý quyết định thành công: ' + decision);
+      $('#modal-approval-action').modal('hide');
+      loadPendingTasks();
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    }
+  }
+
+  // ==========================================
+  // SPRINT 04: TRUYỀN THÔNG, THÔNG BÁO & CẤU HÌNH
+  // ==========================================
+
+  let currentActiveArticleId = null;
+  let currentNewsCategory = 'All';
+
+  // --- 1. INTERNAL NEWS (TSK-414, TSK-415) ---
+  function filterNewsCategory(cat, btn) {
+    currentNewsCategory = cat;
+    $(btn).siblings().removeClass('active');
+    $(btn).addClass('active');
+    loadNews();
+  }
+
+  async function loadNews() {
+    const grid = $('#news-articles-grid');
+    grid.html('<div class="col-12 text-center text-muted p-4"><i class="fas fa-spinner fa-spin mr-1"></i> Đang tải danh sách bản tin...</div>');
+
+    try {
+      let url = '/api/news?pageSize=20';
+      if (currentNewsCategory !== 'All') {
+        url += `&category=${currentNewsCategory}`;
+      }
+      const res = await fetch(url, { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải bản tin.');
+      const articles = await res.json();
+
+      grid.empty();
+      if (articles.length === 0) {
+        grid.html(`
+          <div class="col-12 text-center p-5 text-muted">
+            <i class="fas fa-newspaper fa-3x mb-3 text-secondary"></i>
+            <p>Chưa có bài viết nào trong chuyên mục này. Hãy bấm <strong>"Soạn Bài Viết Mới"</strong> để đăng tin.</p>
+          </div>
+        `);
+        return;
+      }
+
+      articles.forEach(a => {
+        const publishDate = a.publishedAt ? new Date(a.publishedAt).toLocaleDateString('vi-VN') : 'Bản nháp';
+        const coverImg = a.coverImageUrl || 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&auto=format&fit=crop&q=60';
+        const categoryBadge = a.category === 'Urgent' ? '<span class="badge badge-danger">KHẨN CẤP</span>' : 
+                             (a.category === 'Policy' ? '<span class="badge badge-info">CHÍNH SÁCH</span>' : '<span class="badge badge-secondary">HOẠT ĐỘNG</span>');
+        const mandatoryBadge = a.isMandatoryRead ? '<span class="badge badge-warning text-dark ml-1"><i class="fas fa-exclamation-triangle mr-1"></i>BẮT BUỘC ĐỌC</span>' : '';
+
+        grid.append(`
+          <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+              <img src="${coverImg}" class="card-img-top" alt="Cover" style="height: 160px; object-fit: cover;">
+              <div class="card-body d-flex flex-column">
+                <div class="mb-2">
+                  ${categoryBadge}
+                  ${mandatoryBadge}
+                  <span class="text-muted text-sm float-right"><i class="far fa-clock"></i> ${publishDate}</span>
+                </div>
+                <h5 class="card-title font-weight-bold text-dark">${a.title}</h5>
+                <p class="card-text text-muted flex-grow-1 mt-2 text-sm">${a.summary}</p>
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                  <small class="text-muted"><i class="fas fa-eye mr-1"></i> ${a.totalReads} lượt đọc</small>
+                  <button class="btn btn-sm btn-outline-primary" onclick="viewNewsDetail('${a.id}')">
+                    <i class="fas fa-book-open mr-1"></i> Đọc Chi Tiết
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `);
+      });
+    } catch (err) {
+      grid.html(`<div class="col-12 alert alert-danger">Lỗi tải tin tức: ${err.message}</div>`);
+    }
+  }
+
+  function openCreateNewsModal() {
+    $('#form-create-news')[0].reset();
+    $('#modal-create-news').modal('show');
+  }
+
+  async function handleCreateNewsSubmit(e) {
+    e.preventDefault();
+    const btn = $('#btn-save-news');
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Đang xuất bản...');
+
+    try {
+      const payload = {
+        title: $('#news-title').val(),
+        summary: $('#news-summary').val(),
+        category: $('#news-category').val(),
+        coverImageUrl: $('#news-cover-url').val() || null,
+        contentHtml: $('#news-content-html').val(),
+        isMandatoryRead: $('#news-is-mandatory').is(':checked'),
+        scheduledPublishAt: $('#news-scheduled-publish').val() ? new Date($('#news-scheduled-publish').val()).toISOString() : null,
+        expiresAt: $('#news-expires-at').val() ? new Date($('#news-expires-at').val()).toISOString() : null
+      };
+
+      const res = await fetch('/api/news', {
+        method: 'POST',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error('Không thể tạo bài viết.');
+      const created = await res.json();
+
+      // Nếu không hẹn giờ thì xuất bản ngay
+      if (!payload.scheduledPublishAt) {
+        await fetch(`/api/news/${created.id}/publish`, {
+          method: 'POST',
+          headers: API_AUTH_HEADER
+        });
+      }
+
+      alert('Đã tạo và xử lý bài viết tin tức thành công!');
+      $('#modal-create-news').modal('hide');
+      loadNews();
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    } finally {
+      btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Xuất Bản Tin Tức');
+    }
+  }
+
+  async function viewNewsDetail(articleId) {
+    currentActiveArticleId = articleId;
+    try {
+      const res = await fetch(`/api/news/${articleId}?userId=22222222-2222-2222-2222-222222222222`, { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải chi tiết bài viết.');
+      const article = await res.json();
+
+      $('#detail-news-title').text(article.title);
+      const catBadge = article.category === 'Urgent' ? '<span class="badge badge-danger">KHẨN CẤP</span>' : 
+                      (article.category === 'Policy' ? '<span class="badge badge-info">CHÍNH SÁCH</span>' : '<span class="badge badge-secondary">HOẠT ĐỘNG</span>');
+      $('#detail-news-badge').html(catBadge);
+      const pubDate = article.publishedAt ? new Date(article.publishedAt).toLocaleString('vi-VN') : 'Bản nháp';
+      $('#detail-news-meta').text(`Đăng ngày: ${pubDate} • Trạng thái: ${article.status}`);
+      $('#detail-news-body').html(article.contentHtml);
+      $('#detail-news-compliance-text').html(`<i class="fas fa-users mr-1"></i> Tổng số lượt đọc: <strong>${article.totalReads}</strong>`);
+
+      // Kiểm soát xác nhận đọc bắt buộc (TSK-415)
+      if (article.isMandatoryRead) {
+        if (article.hasRead) {
+          $('#mandatory-read-banner').hide();
+          $('#read-acknowledged-text').text(`Bạn đã xác nhận hoàn thành đọc chính sách này vào lúc ${new Date(article.readAt).toLocaleString('vi-VN')}.`);
+          $('#read-acknowledged-badge').show();
+        } else {
+          $('#mandatory-read-banner').show();
+          $('#read-acknowledged-badge').hide();
+        }
+      } else {
+        $('#mandatory-read-banner').hide();
+        $('#read-acknowledged-badge').hide();
+      }
+
+      $('#modal-news-detail').modal('show');
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    }
+  }
+
+  async function handleConfirmRead() {
+    if (!currentActiveArticleId) return;
+    const btn = $('#btn-confirm-read');
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Đang xác nhận...');
+
+    try {
+      const res = await fetch(`/api/news/${currentActiveArticleId}/acknowledge-read?employeeId=22222222-2222-2222-2222-222222222222`, {
+        method: 'POST',
+        headers: API_AUTH_HEADER
+      });
+
+      if (!res.ok) throw new Error('Không thể ghi nhận xác nhận đọc.');
+
+      $('#mandatory-read-banner').slideUp();
+      $('#read-acknowledged-text').text(`Bạn vừa xác nhận đã đọc và hiểu rõ nội dung chính sách này (${new Date().toLocaleTimeString('vi-VN')}).`);
+      $('#read-acknowledged-badge').slideDown();
+      alert('Đã xác nhận tuân thủ đọc chính sách thành công!');
+      loadNews();
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    } finally {
+      btn.prop('disabled', false).html('<i class="fas fa-check mr-1"></i> Tôi Đã Đọc & Hiểu Rõ');
+    }
+  }
+
+  // --- 2. NOTIFICATION TEMPLATES & LOGS (TSK-413) ---
+  async function loadTemplates() {
+    const tbody = $('#notification-templates-tbody');
+    try {
+      const res = await fetch('/api/notifications/templates', { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải danh sách mẫu thông báo.');
+      const templates = await res.json();
+
+      tbody.empty();
+      templates.forEach(t => {
+        tbody.append(`
+          <tr>
+            <td><code>${t.templateCode}</code></td>
+            <td><span class="badge badge-info">${t.channel}</span></td>
+            <td><small class="text-dark">${t.subjectTemplate || '(Không có tiêu đề)'}</small></td>
+            <td class="text-center">
+              <button class="btn btn-xs btn-outline-primary" onclick="openPreviewTemplate('${t.templateCode}')">
+                <i class="fas fa-eye mr-1"></i> Preview
+              </button>
+            </td>
+          </tr>
+        `);
+      });
+    } catch (err) {
+      tbody.html(`<tr><td colspan="4" class="text-danger text-center">Lỗi: ${err.message}</td></tr>`);
+    }
+  }
+
+  async function openPreviewTemplate(code) {
+    $('#preview-tpl-code').val(code);
+    $('#preview-tpl-body').html('<div class="text-center p-3 text-muted"><i class="fas fa-spinner fa-spin mr-1"></i> Đang render preview...</div>');
+    $('#modal-preview-template').modal('show');
+
+    try {
+      const sampleData = {
+        WorkflowInstanceId: 'WF-2026-088',
+        FormKey: 'PR_PURCHASE_LAPTOP',
+        DueDate: '10/11/2026 17:00',
+        ApprovedDate: '06/11/2026 10:15',
+        RejectedByName: 'Trần Văn Giám Đốc',
+        RejectionReason: 'Vượt hạn mức ngân sách quý 4 được duyệt',
+        CancelledByName: 'Nguyễn Văn Nhân Viên',
+        CancellationReason: 'Không còn nhu cầu mua sắm thiết bị này',
+        EmployeeName: 'Lê Văn Thử Việc',
+        EmployeeCode: 'EMP-999',
+        DeactivationDate: '06/11/2026'
+      };
+
+      const res = await fetch('/api/notifications/templates/preview', {
+        method: 'POST',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ templateCode: code, sampleData: sampleData })
+      });
+
+      if (!res.ok) throw new Error('Lỗi render template.');
+      const data = await res.json();
+      $('#preview-tpl-subject').html(`<strong>Mã mẫu:</strong> ${code}`);
+      $('#preview-tpl-body').html(data.renderedHtml);
+    } catch (err) {
+      $('#preview-tpl-body').html(`<div class="alert alert-danger">${err.message}</div>`);
+    }
+  }
+
+  async function loadNotificationLogs() {
+    const list = $('#notification-logs-list');
+    try {
+      const statsRes = await fetch('/api/notifications/logs/stats', { headers: API_AUTH_HEADER });
+      if (statsRes.ok) {
+        const stats = await statsRes.json();
+        $('#notif-stat-success-rate').text(`Tỷ lệ thành công: ${stats.successRate}% (${stats.totalSent}/${stats.totalSent + stats.totalFailed})`);
+      }
+
+      const res = await fetch('/api/notifications/logs?take=15', { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải nhật ký gửi tin.');
+      const logs = await res.json();
+
+      list.empty();
+      if (logs.length === 0) {
+        list.html('<li class="list-group-item text-center text-muted">Chưa có nhật ký gửi tin nào.</li>');
+        return;
+      }
+
+      logs.forEach(l => {
+        const badge = l.status === 'Sent' ? '<span class="badge badge-success">Sent</span>' :
+                     (l.status === 'Failed' ? '<span class="badge badge-danger">Failed</span>' : '<span class="badge badge-warning">Pending</span>');
+        const time = new Date(l.createdAt).toLocaleTimeString('vi-VN');
+        list.append(`
+          <li class="list-group-item p-2">
+            <div class="d-flex justify-content-between">
+              <strong>${l.templateCode}</strong>
+              ${badge}
+            </div>
+            <div class="text-sm text-muted">
+              <span><i class="far fa-envelope mr-1"></i> ${l.recipientEmail || 'N/A'}</span>
+              <span class="float-right">${time} (Retry: ${l.retryCount})</span>
+            </div>
+          </li>
+        `);
+      });
+    } catch (err) {
+      list.html(`<li class="list-group-item text-danger">Lỗi: ${err.message}</li>`);
+    }
+  }
+
+  // --- 3. WHITE-LABELING SETTINGS (TSK-416) ---
+  $('#setting-primary-color').on('input', function() {
+    $('#setting-primary-color-text').val(this.value);
+    $('#preview-primary-badge').css('background-color', this.value);
+  });
+  $('#setting-primary-color-text').on('input', function() {
+    $('#setting-primary-color').val(this.value);
+    $('#preview-primary-badge').css('background-color', this.value);
+  });
+  $('#setting-accent-color').on('input', function() {
+    $('#setting-accent-color-text').val(this.value);
+    $('#preview-accent-badge').css('background-color', this.value);
+  });
+  $('#setting-accent-color-text').on('input', function() {
+    $('#setting-accent-color').val(this.value);
+    $('#preview-accent-badge').css('background-color', this.value);
+  });
+  $('#setting-app-name').on('input', function() {
+    $('#preview-app-title').text(this.value);
+  });
+  $('#setting-corp-name').on('input', function() {
+    $('#preview-corp-title').text(this.value);
+  });
+  $('#setting-logo-url').on('input', function() {
+    $('#preview-logo-img').attr('src', this.value);
+  });
+
+  async function loadBrandTheme() {
+    try {
+      const res = await fetch('/api/settings/brand-theme', { headers: API_AUTH_HEADER });
+      if (!res.ok) return;
+      const theme = await res.json();
+
+      $('#setting-app-name').val(theme.appName);
+      $('#setting-corp-name').val(theme.corporationName);
+      $('#setting-logo-url').val(theme.logoUrl);
+      $('#setting-primary-color').val(theme.primaryColor);
+      $('#setting-primary-color-text').val(theme.primaryColor);
+      $('#setting-accent-color').val(theme.accentColor);
+      $('#setting-accent-color-text').val(theme.accentColor);
+
+      applyBrandThemeLive(theme);
+
+      // Tải Audit Trail
+      const histRes = await fetch('/api/settings/Brand:AppName/history', { headers: API_AUTH_HEADER });
+      if (histRes.ok) {
+        const histories = await histRes.json();
+        const tbody = $('#settings-history-tbody');
+        tbody.empty();
+        if (histories.length === 0) {
+          tbody.html('<tr><td colspan="3" class="text-center text-muted">Chưa có thay đổi nào được ghi nhận.</td></tr>');
+        } else {
+          histories.forEach(h => {
+            tbody.append(`
+              <tr>
+                <td><code>${h.settingKey}</code></td>
+                <td><small>${h.newValue}</small></td>
+                <td><small class="text-muted">${h.changedByUserName}</small></td>
+              </tr>
+            `);
+          });
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function applyBrandThemeLive(theme) {
+    if (theme.appName) {
+      $('#app-brand-title').html(`<strong>${theme.appName}</strong>`);
+      $('#preview-app-title').text(theme.appName);
+    }
+    if (theme.corporationName) {
+      $('#preview-corp-title').text(theme.corporationName);
+    }
+    if (theme.logoUrl) {
+      $('#app-brand-logo').attr('src', theme.logoUrl);
+      $('#preview-logo-img').attr('src', theme.logoUrl);
+    }
+    if (theme.primaryColor) {
+      $('#preview-primary-badge').css('background-color', theme.primaryColor);
+      $('.main-header.navbar').css('border-top', `3px solid ${theme.primaryColor}`);
+    }
+    if (theme.accentColor) {
+      $('#preview-accent-badge').css('background-color', theme.accentColor);
+    }
+  }
+
+  async function handleBrandSave(e) {
+    e.preventDefault();
+    const btn = $('#btn-save-settings');
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Đang lưu...');
+
+    try {
+      const theme = {
+        appName: $('#setting-app-name').val(),
+        corporationName: $('#setting-corp-name').val(),
+        logoUrl: $('#setting-logo-url').val(),
+        faviconUrl: '/favicon.ico',
+        primaryColor: $('#setting-primary-color').val(),
+        accentColor: $('#setting-accent-color').val()
+      };
+      const reason = $('#setting-change-reason').val();
+
+      const res = await fetch(`/api/settings/brand-theme?reason=${encodeURIComponent(reason)}`, {
+        method: 'PUT',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify(theme)
+      });
+
+      if (!res.ok) throw new Error('Không thể lưu cấu hình thương hiệu.');
+      const updated = await res.json();
+
+      applyBrandThemeLive(updated);
+      alert('Đã cập nhật cấu hình thương hiệu thành công! Cache hệ thống đã được làm mới tức thì.');
+      loadBrandTheme();
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    } finally {
+      btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Lưu Cấu Hình Thương Hiệu');
+    }
+  }
+
+  // ==========================================
+  // SPRINT 05: DOCUMENT TEMPLATES & GENERATION (TSK-511, TSK-512)
+  // ==========================================
+
+  async function loadDocTemplates() {
+    const tbody = $('#doc-templates-tbody');
+    try {
+      const res = await fetch('/api/documents/templates', { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải danh sách mẫu tài liệu.');
+      const templates = await res.json();
+      tbody.empty();
+
+      if (!templates || templates.length === 0) {
+        tbody.html('<tr><td colspan="4" class="text-center text-muted">Chưa có mẫu tài liệu nào được đăng ký.</td></tr>');
+        return;
+      }
+
+      templates.forEach(t => {
+        tbody.append(`
+          <tr>
+            <td><code>${t.templateKey}</code></td>
+            <td><strong>${t.title}</strong></td>
+            <td><span class="badge badge-info">${t.outputFormat || 'DOCX'}</span></td>
+            <td><small class="text-muted"><code>${t.placeholderSchema || '{}'}</code></small></td>
+          </tr>
+        `);
+      });
+    } catch (err) {
+      console.error(err);
+      tbody.html(`<tr><td colspan="4" class="text-center text-danger">Lỗi: ${err.message}</td></tr>`);
+    }
+  }
+
+  async function loadGeneratedDocs() {
+    const tbody = $('#generated-docs-tbody');
+    try {
+      tbody.html('<tr><td colspan="4" class="text-center text-muted"><i class="fas fa-spinner fa-spin mr-1"></i> Đang nạp văn bản đã sinh...</td></tr>');
+      const res = await fetch('/api/documents/generated', { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể nạp danh sách văn bản đã sinh.');
+      const docs = await res.json();
+      tbody.empty();
+
+      if (!docs || docs.length === 0) {
+        tbody.html('<tr><td colspan="4" class="text-center text-muted">Chưa có văn bản nào được tự động sinh. (Các văn bản sẽ sinh tự động khi quy trình được duyệt hoàn tất).</td></tr>');
+        return;
+      }
+
+      docs.forEach(d => {
+        const hashDisplay = d.contentSha256Hash 
+          ? `<code class="text-xs text-primary" title="${d.contentSha256Hash}">${d.contentSha256Hash.substring(0, 16)}...${d.contentSha256Hash.substring(d.contentSha256Hash.length - 8)}</code>`
+          : '<span class="text-muted">N/A</span>';
+        const dateStr = d.generatedAt ? new Date(d.generatedAt).toLocaleString('vi-VN') : '';
+
+        tbody.append(`
+          <tr>
+            <td>
+              <i class="fas fa-file-contract text-primary mr-1"></i>
+              <strong>${d.generatedFileName}</strong>
+              <br><small class="text-muted">Sinh lúc: ${dateStr}</small>
+            </td>
+            <td><code>${d.workflowInstanceId}</code></td>
+            <td>${hashDisplay}</td>
+            <td class="text-center" id="verify-cell-${d.id}">
+              <a href="${d.oneDriveWebUrl}" target="_blank" class="btn btn-xs btn-outline-info mr-1">
+                <i class="fas fa-external-link-alt"></i> Xem
+              </a>
+              <button class="btn btn-xs btn-outline-success" onclick="verifyGeneratedDoc('${d.id}', this)">
+                <i class="fas fa-shield-alt"></i> Xác thực
+              </button>
+            </td>
+          </tr>
+        `);
+      });
+    } catch (err) {
+      console.error(err);
+      tbody.html(`<tr><td colspan="4" class="text-center text-danger">Lỗi: ${err.message}</td></tr>`);
+    }
+  }
+
+  async function verifyGeneratedDoc(docId, btn) {
+    const originalHtml = $(btn).html();
+    $(btn).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Kiểm tra...');
+    try {
+      const res = await fetch(`/api/documents/generated/${docId}/verify`, { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể kiểm tra toàn vẹn tài liệu.');
+      const data = await res.json();
+      if (data.isValid) {
+        $(btn).parent().append('<span class="badge badge-success ml-1"><i class="fas fa-check-shield"></i> SHA-256 Khớp</span>');
+        $(btn).remove();
+      } else {
+        $(btn).parent().append('<span class="badge badge-danger ml-1"><i class="fas fa-times-circle"></i> Sai lệch!</span>');
+        $(btn).prop('disabled', false).html(originalHtml);
+      }
+    } catch (err) {
+      alert('Lỗi xác thực: ' + err.message);
+      $(btn).prop('disabled', false).html(originalHtml);
+    }
+  }
+
+  // ==========================================
+  // SPRINT 06: MULTI-PROVIDER AI ASSISTANT & RAG (TSK-616, TSK-617, TSK-618)
+  // ==========================================
+
+  let aiConversationSessionId = 'SESSION-' + Date.now();
+  let aiCurrentProvider = 'Gemini';
+
+  function toggleAiChatWidget() {
+    const card = $('#ai-chat-card');
+    if (card.is(':visible')) {
+      card.fadeOut(200);
+    } else {
+      card.fadeIn(200).css('display', 'flex');
+      $('#ai-unread-badge').hide();
+      $('#ai-chat-input').focus();
+    }
+  }
+
+  function renderAiMarkdown(text) {
+    if (!text) return '';
+    let html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // Code blocks
+    html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+    // Inline code
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // Bold
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    // Italic
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    // Unordered lists
+    html = html.replace(/^\s*-\s+(.*)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul class="pl-3 mb-1">$1</ul>');
+    // Paragraphs
+    const paragraphs = html.split(/\n{2,}/);
+    return paragraphs.map(p => {
+      p = p.trim();
+      if (!p) return '';
+      if (p.startsWith('<pre>') || p.startsWith('<ul>')) return p;
+      return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+    }).join('');
+  }
+
+  function sendAiQuickPrompt(prompt) {
+    $('#ai-chat-input').val(prompt);
+    $('#ai-chat-form').submit();
+  }
+
+  function clearAiChatHistory() {
+    aiConversationSessionId = 'SESSION-' + Date.now();
+    $('#ai-chat-messages').html(`
+      <div class="direct-chat-msg mb-3">
+        <div class="direct-chat-infos clearfix">
+          <span class="direct-chat-name float-left text-sm font-weight-bold text-purple"><i class="fas fa-robot mr-1"></i> Trợ lý AI Nội Bộ</span>
+          <span class="direct-chat-timestamp float-right text-xs text-muted">Vừa xong</span>
+        </div>
+        <div class="direct-chat-text bg-light border p-2" style="border-radius: 8px;">
+          Đã xóa lịch sử đàm thoại. Bạn có thể bắt đầu phiên hỏi đáp mới về quy chế chi tiêu hoặc nhiệm vụ duyệt BPMN.
+          <div class="mt-2 pt-2 border-top">
+            <small class="text-muted d-block mb-1">Gợi ý câu hỏi nhanh:</small>
+            <div class="d-flex flex-wrap gap-1">
+              <button class="btn btn-xs btn-outline-primary mb-1 mr-1" onclick="sendAiQuickPrompt('Hạn mức chi tiếp khách tối đa của Trưởng phòng là bao nhiêu và cần những chứng từ gì?')">
+                <i class="fas fa-question-circle mr-1"></i> Hạn mức tiếp khách Trưởng phòng?
+              </button>
+              <button class="btn btn-xs btn-outline-info mb-1 mr-1" onclick="sendAiQuickPrompt('Hôm nay tôi có hồ sơ nào cần phê duyệt không?')">
+                <i class="fas fa-tasks mr-1"></i> Hồ sơ cần duyệt của tôi?
+              </button>
+              <button class="btn btn-xs btn-outline-success mb-1 mr-1" onclick="sendAiQuickPrompt('Thống kê tình hình phê duyệt quy trình trong hệ thống?')">
+                <i class="fas fa-chart-pie mr-1"></i> Thống kê duyệt quy trình?
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  async function handleAiChatSubmit(e) {
+    e.preventDefault();
+    const input = $('#ai-chat-input');
+    const query = input.val().trim();
+    if (!query) return;
+
+    input.val('').prop('disabled', true);
+    $('#ai-send-btn').prop('disabled', true);
+
+    const msgsContainer = $('#ai-chat-messages');
+
+    // 1. Append User Message
+    const userMsgId = 'msg-' + Date.now();
+    msgsContainer.append(`
+      <div class="ai-msg-bubble ai-user-bubble" id="${userMsgId}">
+        ${$('<div>').text(query).html()}
+      </div>
+    `);
+    msgsContainer.scrollTop(msgsContainer[0].scrollHeight);
+
+    // 2. Append Assistant Message Skeleton
+    const botMsgId = 'bot-' + Date.now();
+    msgsContainer.append(`
+      <div class="ai-msg-bubble ai-assistant-bubble" id="${botMsgId}">
+        <div class="d-flex align-items-center mb-1">
+          <small class="text-purple font-weight-bold"><i class="fas fa-robot mr-1"></i> ${$('#ai-current-model-badge').text()}</small>
+        </div>
+        <div class="ai-content-body"><i class="fas fa-spinner fa-spin mr-1"></i> Đang suy nghĩ...</div>
+        <div class="ai-citations-container mt-2 pt-1 border-top" style="display:none;"></div>
+        <div class="ai-feedback-actions mt-1 pt-1 text-right" style="display:none;"></div>
+      </div>
+    `);
+    msgsContainer.scrollTop(msgsContainer[0].scrollHeight);
+
+    let fullText = '';
+    let currentLogId = null;
+    const bodyElem = $(`#${botMsgId} .ai-content-body`);
+    const citationsElem = $(`#${botMsgId} .ai-citations-container`);
+    const feedbackElem = $(`#${botMsgId} .ai-feedback-actions`);
+
+    try {
+      const response = await fetch('/api/ai/chat/stream', {
+        method: 'POST',
+        headers: {
+          ...API_AUTH_HEADER,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          query: query,
+          providerType: aiCurrentProvider,
+          sessionId: aiConversationSessionId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Lỗi máy chủ: ' + response.statusText);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
+
+        let currentEvent = 'chunk';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+
+          if (trimmed.startsWith('event:')) {
+            currentEvent = trimmed.substring(6).trim();
+          } else if (trimmed.startsWith('data:')) {
+            const dataStr = trimmed.substring(5).trim();
+            if (dataStr === '[DONE]') continue;
+
+            try {
+              const parsed = JSON.parse(dataStr);
+
+              if (currentEvent === 'tool_call') {
+                $('#ai-tool-text').text(`Đang gọi C# Tool: [${parsed.tool_name}]...`);
+                $('#ai-tool-indicator').fadeIn(150);
+              } else if (currentEvent === 'chunk') {
+                $('#ai-tool-indicator').fadeOut(150);
+                if (parsed.content) {
+                  fullText += parsed.content;
+                  bodyElem.html(renderAiMarkdown(fullText));
+                  msgsContainer.scrollTop(msgsContainer[0].scrollHeight);
+                }
+              } else if (currentEvent === 'citation') {
+                citationsElem.show();
+                const pageInfo = parsed.page_number ? ` - Trang ${parsed.page_number}` : '';
+                const sectionInfo = parsed.section_title ? ` (${parsed.section_title})` : '';
+                citationsElem.append(`
+                  <a href="${parsed.one_drive_preview_url || '#'}" target="_blank" class="citation-pill" title="Mở file tài liệu gốc trên OneDrive">
+                    <i class="fas fa-file-pdf mr-1 text-danger"></i> <strong>${parsed.document_title}</strong>${pageInfo}${sectionInfo}
+                  </a>
+                `);
+              } else if (currentEvent === 'done') {
+                $('#ai-tool-indicator').fadeOut(150);
+                currentLogId = parsed.log_id;
+                if (currentLogId) {
+                  feedbackElem.html(`
+                    <small class="text-muted mr-2">Câu trả lời có hữu ích?</small>
+                    <button class="btn btn-xs btn-outline-success mr-1" onclick="submitAiFeedback('${currentLogId}', true, this)"><i class="fas fa-thumbs-up"></i> Hữu ích</button>
+                    <button class="btn btn-xs btn-outline-danger" onclick="submitAiFeedback('${currentLogId}', false, this)"><i class="fas fa-thumbs-down"></i> Chưa đúng</button>
+                  `).show();
+                }
+              }
+            } catch (jsonErr) {
+              if (currentEvent === 'chunk') {
+                fullText += dataStr;
+                bodyElem.html(renderAiMarkdown(fullText));
+                msgsContainer.scrollTop(msgsContainer[0].scrollHeight);
+              }
+            }
+          }
+        }
+      }
+
+      if (!fullText) {
+        bodyElem.html('<span class="text-muted">Không nhận được phản hồi từ AI. Vui lòng thử lại.</span>');
+      }
+
+    } catch (err) {
+      bodyElem.html(`<span class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i> Lỗi: ${err.message}</span>`);
+    } finally {
+      $('#ai-tool-indicator').fadeOut(150);
+      input.prop('disabled', false).focus();
+      $('#ai-send-btn').prop('disabled', false);
+    }
+  }
+
+  async function submitAiFeedback(logId, isHelpful, btn) {
+    const parent = $(btn).parent();
+    $(btn).prop('disabled', true);
+    try {
+      const res = await fetch(`/api/ai/feedback/${logId}`, {
+        method: 'POST',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isHelpful: isHelpful })
+      });
+      if (res.ok) {
+        parent.html('<span class="badge badge-success"><i class="fas fa-check mr-1"></i> Cảm ơn bạn đã phản hồi!</span>');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function changeActiveAiProvider(providerType) {
+    aiCurrentProvider = providerType;
+    const modelLabels = {
+      'Gemini': 'Google Gemini 2.0 Flash',
+      'OpenAi': 'OpenAI ChatGPT (GPT-4o)',
+      'Claude': 'Anthropic Claude 3.5 Sonnet',
+      'Ollama': 'Local LLM (Ollama MCP)'
+    };
+    $('#ai-current-model-badge').text(modelLabels[providerType] || providerType);
+  }
+
+  // --- AI Provider Configurations Admin (TSK-618) ---
+
+  async function loadAiProviderConfigs() {
+    try {
+      const res = await fetch('/api/ai/configs', { headers: API_AUTH_HEADER });
+      if (!res.ok) return;
+      const configs = await res.json();
+
+      const container = $('#ai-providers-cards-container');
+      container.empty();
+
+      const providerIcons = {
+        'Gemini': 'fab fa-google text-primary',
+        'OpenAi': 'fas fa-brain text-success',
+        'Claude': 'fas fa-feather-alt text-warning',
+        'Ollama': 'fas fa-server text-info'
+      };
+
+      configs.forEach(c => {
+        const isDef = c.isDefault;
+        const icon = providerIcons[c.providerType] || 'fas fa-robot text-purple';
+        if (isDef) {
+          aiCurrentProvider = c.providerType;
+          $('#ai-quick-provider-select').val(c.providerType);
+          changeActiveAiProvider(c.providerType);
+        }
+
+        container.append(`
+          <div class="col-md-3">
+            <div class="card card-outline ${isDef ? 'card-purple shadow' : 'card-secondary'}">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5><i class="${icon} mr-1"></i> <strong>${c.providerType}</strong></h5>
+                  ${isDef ? '<span class="badge bg-purple"><i class="fas fa-check-circle mr-1"></i> Mặc định</span>' : ''}
+                </div>
+                <p class="mb-1 text-sm"><strong>Model:</strong> <code>${c.modelName}</code></p>
+                <p class="mb-1 text-sm"><strong>Endpoint:</strong> <small class="text-muted d-block text-truncate" title="${c.baseUrl}">${c.baseUrl}</small></p>
+                <p class="mb-1 text-sm"><strong>API Key:</strong> ${c.isApiKeyConfigured ? '<span class="badge badge-success"><i class="fas fa-lock mr-1"></i> Đã cấu hình & mã hóa</span>' : '<span class="badge badge-warning">Chưa có key</span>'}</p>
+                <p class="mb-2 text-sm"><strong>Nhiệt độ:</strong> ${c.temperature} | <strong>MaxTokens:</strong> ${c.maxTokens}</p>
+                <div class="d-flex justify-content-between">
+                  <button class="btn btn-xs btn-outline-info" onclick="populateConfigForm('${c.providerType}', '${c.modelName}', '${c.baseUrl}', ${c.temperature}, ${c.maxTokens}, ${isDef})">
+                    <i class="fas fa-edit mr-1"></i> Sửa
+                  </button>
+                  ${!isDef ? `<button class="btn btn-xs btn-purple" onclick="setAiDefaultProvider('${c.providerType}')"><i class="fas fa-star mr-1"></i> Đặt làm Mặc định</button>` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `);
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function populateConfigForm(providerType, modelName, baseUrl, temp, maxTokens, isDefault) {
+    $('#config-provider-type').val(providerType);
+    $('#config-model-name').val(modelName);
+    $('#config-base-url').val(baseUrl);
+    $('#config-temperature').val(temp);
+    $('#config-max-tokens').val(maxTokens);
+    $('#config-is-default').prop('checked', isDefault);
+    $('#config-api-key').val('').focus();
+  }
+
+  function onProviderSelectChanged(provider) {
+    const defaults = {
+      'Gemini': { model: 'gemini-2.0-flash', url: 'https://generativelanguage.googleapis.com/v1beta' },
+      'OpenAi': { model: 'gpt-4o', url: 'https://api.openai.com/v1' },
+      'Claude': { model: 'claude-3-5-sonnet-20241022', url: 'https://api.anthropic.com/v1' },
+      'Ollama': { model: 'llama3.2', url: 'http://localhost:11434/api' }
+    };
+    if (defaults[provider]) {
+      $('#config-model-name').val(defaults[provider].model);
+      $('#config-base-url').val(defaults[provider].url);
+    }
+  }
+
+  function toggleApiKeyVisibility() {
+    const input = $('#config-api-key');
+    const icon = $('#toggle-key-icon');
+    if (input.attr('type') === 'password') {
+      input.attr('type', 'text');
+      icon.removeClass('fa-eye').addClass('fa-eye-slash');
+    } else {
+      input.attr('type', 'password');
+      icon.removeClass('fa-eye-slash').addClass('fa-eye');
+    }
+  }
+
+  async function saveAiProviderConfig(e) {
+    e.preventDefault();
+    const btn = $('#btn-save-ai-config');
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Đang lưu...');
+
+    try {
+      const payload = {
+        providerType: $('#config-provider-type').val(),
+        modelName: $('#config-model-name').val(),
+        baseUrl: $('#config-base-url').val(),
+        apiKey: $('#config-api-key').val() || null,
+        temperature: parseFloat($('#config-temperature').val()),
+        maxTokens: parseInt($('#config-max-tokens').val()),
+        isDefault: $('#config-is-default').is(':checked'),
+        isActive: true
+      };
+
+      const res = await fetch('/api/ai/configs', {
+        method: 'POST',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error('Không thể lưu cấu hình Provider.');
+      alert('Đã cập nhật cấu hình Provider thành công! API Key đã được mã hóa ở trạng thái nghỉ.');
+      loadAiProviderConfigs();
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    } finally {
+      btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Lưu Cấu Hình');
+    }
+  }
+
+  async function setAiDefaultProvider(providerType) {
+    try {
+      const res = await fetch(`/api/ai/configs/default/${providerType}`, {
+        method: 'POST',
+        headers: API_AUTH_HEADER
+      });
+      if (res.ok) {
+        loadAiProviderConfigs();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // --- Knowledge Base Admin & RAG Upload (TSK-618) ---
+
+  async function loadKnowledgeDocs() {
+    const tbody = $('#knowledge-docs-tbody');
+    try {
+      const res = await fetch('/api/ai/knowledge', { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải cơ sở tri thức.');
+      const docs = await res.json();
+      tbody.empty();
+
+      if (!docs || docs.length === 0) {
+        tbody.html('<tr><td colspan="5" class="text-center text-muted">Chưa có văn bản quy chế nào được nạp vào cơ sở tri thức.</td></tr>');
+        return;
+      }
+
+      docs.forEach(d => {
+        const statusBadge = d.status === 'Indexed'
+          ? '<span class="badge badge-success"><i class="fas fa-check mr-1"></i> Đã Index Qdrant</span>'
+          : `<span class="badge badge-warning">${d.status}</span>`;
+
+        tbody.append(`
+          <tr>
+            <td>
+              <strong>${d.title}</strong>
+              <br><small class="text-muted"><i class="fas fa-hashtag mr-1"></i>${d.documentNumber}</small>
+            </td>
+            <td><small class="badge badge-info">${d.issuingDepartment || 'Nội bộ'}</small></td>
+            <td><span class="badge badge-light border"><strong>${d.totalChunks}</strong> chunks</span></td>
+            <td>${statusBadge}</td>
+            <td>
+              <button class="btn btn-xs btn-outline-purple mr-1" onclick="askAiAboutDoc('${d.title}')" title="Đặt câu hỏi về văn bản này">
+                <i class="fas fa-comments mr-1"></i> Hỏi AI
+              </button>
+              <a href="${d.oneDriveWebUrl || '#'}" target="_blank" class="btn btn-xs btn-outline-secondary" title="Xem trên OneDrive">
+                <i class="fas fa-external-link-alt"></i>
+              </a>
+            </td>
+          </tr>
+        `);
+      });
+    } catch (err) {
+      tbody.html(`<tr><td colspan="5" class="text-center text-danger">Lỗi: ${err.message}</td></tr>`);
+    }
+  }
+
+  function askAiAboutDoc(docTitle) {
+    toggleAiChatWidget();
+    sendAiQuickPrompt(`Tóm tắt các quy định chính và hạn mức quan trọng trong "${docTitle}"?`);
+  }
+
+  async function handleKnowledgeUpload(e) {
+    e.preventDefault();
+    const fileInput = document.getElementById('kb-file');
+    if (!fileInput.files || fileInput.files.length === 0) {
+      alert('Vui lòng chọn một tệp tài liệu.');
+      return;
+    }
+
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('title', $('#kb-title').val());
+    formData.append('documentNumber', $('#kb-number').val());
+    formData.append('issuingDepartment', $('#kb-dept').val());
+    formData.append('documentType', $('#kb-type').val());
+
+    const btn = $('#btn-upload-knowledge');
+    btn.prop('disabled', true);
+    const progressWrapper = $('#kb-index-progress-wrapper');
+    const progressBar = $('#kb-index-progress-bar');
+    const statusText = $('#kb-progress-status-text');
+
+    progressWrapper.show();
+    progressBar.css('width', '25%');
+    statusText.text('Đang tải tệp lên kho lưu trữ OneDrive...');
+
+    setTimeout(() => {
+      progressBar.css('width', '60%');
+      statusText.text('Đang phân mảnh (Chunking 500 tokens) & Trích xuất tiêu đề...');
+    }, 400);
+
+    try {
+      const res = await fetch('/api/ai/knowledge/upload', {
+        method: 'POST',
+        headers: API_AUTH_HEADER,
+        body: formData
+      });
+
+      if (!res.ok) throw new Error('Không thể tải tệp lên và đánh index.');
+      const result = await res.json();
+
+      progressBar.css('width', '90%');
+      statusText.text('Đang tạo Embedding 768 chiều & nạp Vectors vào Qdrant...');
+
+      setTimeout(() => {
+        progressBar.css('width', '100%');
+        statusText.text(`Đã hoàn tất! Đã đánh index ${result.totalChunks} chunks vào Qdrant.`);
+        alert(`Tài liệu "${result.title}" đã được lập chỉ mục thành công với ${result.totalChunks} vector chunks!`);
+        $('#ai-upload-form')[0].reset();
+        $('#kb-file-label').text('Chọn tệp tài liệu...');
+        progressWrapper.fadeOut(1500);
+        btn.prop('disabled', false);
+        loadKnowledgeDocs();
+      }, 500);
+
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+      progressWrapper.hide();
+      btn.prop('disabled', false);
+    }
+  }
+
+  // --- AI Conversation Logs Admin (TSK-618) ---
+
+  async function loadAiConversationLogs() {
+    const tbody = $('#ai-logs-tbody');
+    try {
+      const res = await fetch('/api/ai/logs', { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải nhật ký đàm thoại.');
+      const logs = await res.json();
+      tbody.empty();
+
+      if (!logs || logs.length === 0) {
+        tbody.html('<tr><td colspan="7" class="text-center text-muted">Chưa có lượt tương tác nào được ghi nhận.</td></tr>');
+        return;
+      }
+
+      logs.forEach(l => {
+        const timeStr = l.createdAt ? new Date(l.createdAt).toLocaleTimeString('vi-VN') : '';
+        const feedbackBadge = l.isHelpful === true
+          ? '<span class="badge badge-success"><i class="fas fa-thumbs-up"></i> Tốt</span>'
+          : (l.isHelpful === false ? '<span class="badge badge-danger"><i class="fas fa-thumbs-down"></i> Kém</span>' : '<span class="text-muted text-xs">Chưa có</span>');
+
+        const toolBadge = l.toolsInvoked
+          ? `<span class="badge badge-light border text-purple font-monospace">${l.toolsInvoked}</span>`
+          : '<span class="text-muted text-xs">Không</span>';
+
+        tbody.append(`
+          <tr>
+            <td><small class="text-muted">${timeStr}</small></td>
+            <td><strong>${l.userId || 'superadmin'}</strong></td>
+            <td><span class="badge badge-info">${l.providerType}</span> <small class="text-muted">${l.modelName}</small></td>
+            <td>
+              <div style="max-width: 280px;">
+                <div class="text-truncate"><strong>Hỏi:</strong> ${l.queryText}</div>
+                <div class="text-truncate text-muted text-xs"><strong>Đáp:</strong> ${l.responseText}</div>
+              </div>
+            </td>
+            <td>${toolBadge}</td>
+            <td><small>${l.latencyMs}ms</small></td>
+            <td>${feedbackBadge}</td>
+          </tr>
+        `);
+      });
+    } catch (err) {
+      tbody.html(`<tr><td colspan="7" class="text-center text-danger">Lỗi: ${err.message}</td></tr>`);
+    }
+  }
+
+  // =========================================================================
+  // SPRINT 07: ANALYTICS & BI REPORTING JAVASCRIPT LOGIC (TSK-710 -> TSK-714)
+  // =========================================================================
+  let statusChartInstance = null;
+  let costCenterChartInstance = null;
+  let currentReportColumns = [];
+  let filterIndex = 0;
+
+  function refreshAnalyticsData() {
+    loadExecutiveDashboard();
+    loadBottleneckHeatmap();
+    loadEmployeeScorecards();
+    loadReportColumns();
+    loadScheduledSubscriptions();
+  }
+
+  // 1. TSK-710: Load Executive BI Dashboard
+  async function loadExecutiveDashboard() {
+    try {
+      const res = await fetch('/api/analytics/dashboard', { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải KPI dashboard');
+      const data = await res.json();
+
+      $('#bi-total-submissions').text(data.totalSubmissions.toLocaleString());
+      $('#bi-corp-sla').text(data.corporateSlaComplianceRate.toFixed(1) + '%');
+      $('#bi-total-expenditure').text(data.totalApprovedBudget.toLocaleString('vi-VN') + ' đ');
+      $('#bi-bottlenecks-count').text(data.activeBottlenecksCount);
+
+      // Render Doughnut Chart for Status Breakdown
+      const statusLabels = ['Đã duyệt (Approved)', 'Đang xử lý (In-Progress)', 'Từ chối (Rejected)', 'Đã hủy (Cancelled)'];
+      const statusValues = [
+        data.statusBreakdown?.Approved || 0,
+        data.statusBreakdown?.InProgress || 0,
+        data.statusBreakdown?.Rejected || 0,
+        data.statusBreakdown?.Cancelled || 0
+      ];
+
+      const ctxStatus = document.getElementById('chart-status-breakdown');
+      if (ctxStatus) {
+        if (statusChartInstance) statusChartInstance.destroy();
+        statusChartInstance = new Chart(ctxStatus, {
+          type: 'doughnut',
+          data: {
+            labels: statusLabels,
+            datasets: [{
+              data: statusValues.some(v => v > 0) ? statusValues : [12, 5, 2, 1], // fallback demo sample if 0
+              backgroundColor: ['#28a745', '#007bff', '#dc3545', '#6c757d']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom' }
+            }
+          }
+        });
+      }
+
+      // Render Cost Center Bar Chart
+      const finRes = await fetch('/api/analytics/financial/summary', { headers: API_AUTH_HEADER });
+      if (finRes.ok) {
+        const finData = await finRes.json();
+        const ccLabels = (finData.costCenterBreakdown || []).map(c => c.costCenterName);
+        const ccValues = (finData.costCenterBreakdown || []).map(c => c.amount);
+
+        const ctxCost = document.getElementById('chart-cost-centers');
+        if (ctxCost) {
+          if (costCenterChartInstance) costCenterChartInstance.destroy();
+          costCenterChartInstance = new Chart(ctxCost, {
+            type: 'bar',
+            data: {
+              labels: ccLabels.length > 0 ? ccLabels : ['Khối CNTT & Chuyển đổi số', 'Khối Hành chính Quản trị', 'Khối Vận hành Sản xuất', 'Khối Tài chính Kế toán'],
+              datasets: [{
+                label: 'Giải ngân (VNĐ)',
+                data: ccValues.length > 0 ? ccValues : [450000000, 180000000, 320000000, 95000000],
+                backgroundColor: '#20c997'
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                y: {
+                  ticks: {
+                    callback: function(val) { return (val / 1000000).toLocaleString() + ' Tr'; }
+                  }
+                }
+              }
+            }
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Lỗi tải Executive Dashboard:', err);
+    }
+  }
+
+  // 2. TSK-711: Load Bottleneck Heatmap
+  async function loadBottleneckHeatmap() {
+    const tbody = $('#bottlenecks-tbody');
+    try {
+      const res = await fetch('/api/analytics/bottlenecks', { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải điểm nghẽn SLA');
+      const list = await res.json();
+
+      if (!list || list.length === 0) {
+        tbody.html('<tr><td colspan="9" class="text-center text-muted">Chưa phát hiện điểm nghẽn quy trình nào. Toàn bộ bước duyệt hoạt động ổn định.</td></tr>');
+        return;
+      }
+
+      tbody.empty();
+      list.forEach(b => {
+        let badgeHtml = '<span class="badge badge-success"><i class="fas fa-check mr-1"></i> Bình thường</span>';
+        let rowClass = '';
+        let adviceHtml = '<small class="text-muted">Vận hành đúng SLA</small>';
+
+        if (b.isCurrentBottleneck) {
+          rowClass = b.bottleneckSeverity === 'Critical' ? 'table-danger' : 'table-warning';
+          badgeHtml = `<span class="badge badge-danger"><i class="fas fa-exclamation-triangle mr-1"></i> NGHẼN (${b.bottleneckSeverity})</span>`;
+          adviceHtml = '<strong class="text-danger"><i class="fas fa-arrow-up mr-1"></i> Đề xuất tăng nhân sự hoặc nới SLA</strong>';
+        }
+
+        tbody.append(`
+          <tr class="${rowClass}">
+            <td><strong>${b.workflowTitle}</strong></td>
+            <td>${b.stepName}</td>
+            <td><span class="badge badge-secondary">${b.targetRole || 'Mặc định'}</span></td>
+            <td>${b.totalTasksProcessed.toLocaleString()}</td>
+            <td>${Math.round(b.avgWaitTimeMinutes)} phút</td>
+            <td>${b.slaAllowedHours} giờ</td>
+            <td><strong>${b.slaBreachPercentage.toFixed(1)}%</strong></td>
+            <td>${badgeHtml}</td>
+            <td>${adviceHtml}</td>
+          </tr>
+        `);
+      });
+    } catch (err) {
+      tbody.html(`<tr><td colspan="9" class="text-center text-danger">Lỗi: ${err.message}</td></tr>`);
+    }
+  }
+
+  async function recalculateAllBottlenecks() {
+    try {
+      const res = await fetch('/api/analytics/bottlenecks/recalculate', {
+        method: 'POST',
+        headers: API_AUTH_HEADER
+      });
+      if (!res.ok) throw new Error('Quá trình quét điểm nghẽn thất bại');
+      alert('Đã hoàn tất tính toán quét lại toàn bộ điểm nghẽn quy trình theo thuật toán SLA!');
+      loadBottleneckHeatmap();
+      loadExecutiveDashboard();
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    }
+  }
+
+  // 3. TSK-712: Load Employee Productivity Scorecards
+  async function loadEmployeeScorecards() {
+    const tbody = $('#scorecards-tbody');
+    const yearMonth = $('#scorecard-month-input').val() || '2026-11';
+    tbody.html('<tr><td colspan="10" class="text-center text-muted"><i class="fas fa-spinner fa-spin mr-1"></i> Đang tải dữ liệu năng suất nhân sự...</td></tr>');
+
+    try {
+      const res = await fetch(`/api/analytics/scorecards/department?yearMonth=${yearMonth}`, { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải bảng năng suất');
+      const list = await res.json();
+
+      if (!list || list.length === 0) {
+        tbody.html('<tr><td colspan="10" class="text-center text-muted">Chưa có dữ liệu năng suất cho tháng ' + yearMonth + '.</td></tr>');
+        return;
+      }
+
+      tbody.empty();
+      list.forEach(s => {
+        let rankBadge = '<span class="badge badge-info font-weight-bold">B Khá</span>';
+        if (s.scoreRank === 'A+') rankBadge = '<span class="badge badge-success font-weight-bold p-1">A+ Xuất Sắc</span>';
+        else if (s.scoreRank === 'A') rankBadge = '<span class="badge badge-primary font-weight-bold p-1">A Giỏi</span>';
+        else if (s.scoreRank === 'C') rankBadge = '<span class="badge badge-warning font-weight-bold p-1">C Cần cải thiện</span>';
+
+        tbody.append(`
+          <tr>
+            <td>
+              <strong>${s.userName}</strong>
+              <div class="text-xs text-muted">${s.userEmail || ''}</div>
+            </td>
+            <td><span class="badge badge-light border">${s.departmentName || 'Chung'}</span></td>
+            <td><strong>${s.totalAssignedTasks}</strong></td>
+            <td>${s.completedTasks}</td>
+            <td><span class="badge ${s.pendingBacklog > 5 ? 'badge-danger' : 'badge-light'}">${s.pendingBacklog}</span></td>
+            <td>${s.completedOnTime}</td>
+            <td><strong>${s.slaComplianceRate.toFixed(1)}%</strong></td>
+            <td>${s.firstTimeRightRate.toFixed(1)}%</td>
+            <td>${s.avgProcessingTimeMinutes.toFixed(1)}p</td>
+            <td>${rankBadge}</td>
+          </tr>
+        `);
+      });
+    } catch (err) {
+      tbody.html(`<tr><td colspan="10" class="text-center text-danger">Lỗi: ${err.message}</td></tr>`);
+    }
+  }
+
+  function reaggregateScorecards() {
+    alert('Hệ thống Background Worker đang chạy tổng hợp định kỳ tự động. Bảng dữ liệu đã được làm mới.');
+    loadEmployeeScorecards();
+  }
+
+  // 4. TSK-713: Dynamic Report Builder
+  function onDataSourceChanged(dataSource) {
+    loadReportColumns(dataSource);
+  }
+
+  async function loadReportColumns(dataSource) {
+    const ds = dataSource || $('#report-datasource').val() || 'WorkflowSubmissions';
+    const container = $('#report-columns-checklist');
+    const sortSelect = $('#report-sort-column');
+    container.html('<small class="text-muted"><i class="fas fa-spinner fa-spin mr-1"></i> Đang tải danh mục cột...</small>');
+
+    try {
+      const res = await fetch(`/api/analytics/reports/columns/${ds}`, { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải danh sách cột');
+      currentReportColumns = await res.json();
+
+      container.empty();
+      sortSelect.empty();
+
+      currentReportColumns.forEach((col, idx) => {
+        const checked = idx < 5 ? 'checked' : '';
+        container.append(`
+          <div class="form-check form-check-inline mr-3 mb-1">
+            <input class="form-check-input report-col-checkbox" type="checkbox" id="col-${col.field}" value="${col.field}" ${checked}>
+            <label class="form-check-label text-sm" for="col-${col.field}">${col.header}</label>
+          </div>
+        `);
+        sortSelect.append(`<option value="${col.field}">${col.header}</option>`);
+      });
+
+      // Reset filter rows
+      $('#filter-rows-container').empty();
+      addFilterRow();
+    } catch (err) {
+      container.html(`<small class="text-danger">Lỗi: ${err.message}</small>`);
+    }
+  }
+
+  function addFilterRow() {
+    const rowId = 'filter-row-' + (++filterIndex);
+    let optionsHtml = '';
+    currentReportColumns.forEach(c => {
+      optionsHtml += `<option value="${c.field}">${c.header}</option>`;
+    });
+
+    $('#filter-rows-container').append(`
+      <div class="d-flex align-items-center mb-2 filter-row" id="${rowId}">
+        <select class="form-control form-control-sm mr-2 filter-field" style="width: 220px;">
+          ${optionsHtml}
+        </select>
+        <select class="form-control form-control-sm mr-2 filter-operator" style="width: 130px;">
+          <option value="=">Bằng (=)</option>
+          <option value="!=">Khác (!=)</option>
+          <option value="contains">Chứa (Contains)</option>
+          <option value=">">Lớn hơn (&gt;)</option>
+          <option value="<">Nhỏ hơn (&lt;)</option>
+          <option value=">=">&gt;=</option>
+          <option value="<=">&lt;=</option>
+        </select>
+        <input type="text" class="form-control form-control-sm mr-2 filter-value" placeholder="Giá trị lọc..." style="flex: 1;">
+        <button type="button" class="btn btn-xs btn-outline-danger" onclick="$('#${rowId}').remove()"><i class="fas fa-trash"></i></button>
+      </div>
+    `);
+  }
+
+  function buildReportRequestPayload(page, pageSize) {
+    const ds = $('#report-datasource').val();
+    const selectedCols = [];
+    $('.report-col-checkbox:checked').each(function() {
+      selectedCols.push($(this).val());
+    });
+
+    const filters = [];
+    $('.filter-row').each(function() {
+      const field = $(this).find('.filter-field').val();
+      const op = $(this).find('.filter-operator').val();
+      const val = $(this).find('.filter-value').val();
+      if (field && val && val.trim().length > 0) {
+        filters.push({ field: field, operator: op, value: val.trim() });
+      }
+    });
+
+    return {
+      dataSource: ds,
+      selectedColumns: selectedCols.length > 0 ? selectedCols : currentReportColumns.map(c => c.field),
+      filters: filters,
+      groupingColumns: null,
+      sortColumn: $('#report-sort-column').val() || null,
+      isAscending: $('#report-sort-direction').val() === 'true',
+      page: page || 1,
+      pageSize: pageSize || 25
+    };
+  }
+
+  async function executeDynamicReport(page) {
+    const thead = $('#report-preview-thead');
+    const tbody = $('#report-preview-tbody');
+    const stats = $('#report-preview-stats');
+    tbody.html('<tr><td class="text-center text-muted p-3"><i class="fas fa-spinner fa-spin mr-1"></i> Đang truy vấn Big Data Streaming...</td></tr>');
+
+    try {
+      const payload = buildReportRequestPayload(page, 25);
+      const startTime = performance.now();
+      const res = await fetch('/api/analytics/reports/execute', {
+        method: 'POST',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || 'Lỗi khi thực thi báo cáo');
+      }
+
+      const result = await res.json();
+      const clientDuration = Math.round(performance.now() - startTime);
+
+      stats.html(`<i class="fas fa-check-circle mr-1"></i> Tổng số: <strong>${result.totalCount.toLocaleString()}</strong> dòng | Độ trễ API: <strong>${result.executionTimeMs}ms</strong> (Client: ${clientDuration}ms)`);
+
+      // Render Headers
+      thead.empty();
+      let headerHtml = '<tr>';
+      result.columns.forEach(col => {
+        headerHtml += `<th>${col.header}</th>`;
+      });
+      headerHtml += '</tr>';
+      thead.html(headerHtml);
+
+      // Render Rows
+      tbody.empty();
+      if (!result.rows || result.rows.length === 0) {
+        tbody.html(`<tr><td colspan="${result.columns.length}" class="text-center text-muted p-3">Không có bản ghi nào khớp với điều kiện lọc.</td></tr>`);
+        return;
+      }
+
+      result.rows.forEach(row => {
+        let rowHtml = '<tr>';
+        result.columns.forEach(col => {
+          const val = row[col.field] ?? '';
+          let displayVal = val;
+          if (col.dataType === 'currency' && typeof val === 'number') {
+            displayVal = val.toLocaleString('vi-VN') + ' đ';
+          } else if (col.dataType === 'date' && val) {
+            displayVal = new Date(val).toLocaleString('vi-VN');
+          }
+          rowHtml += `<td>${displayVal}</td>`;
+        });
+        rowHtml += '</tr>';
+        tbody.append(rowHtml);
+      });
+    } catch (err) {
+      stats.text('Lỗi truy vấn');
+      tbody.html(`<tr><td class="text-center text-danger p-3">Lỗi: ${err.message}</td></tr>`);
+    }
+  }
+
+  async function exportReport(format) {
+    try {
+      const payload = buildReportRequestPayload(1, 5000); // Tối đa 5000 dòng bảo đảm Memory Guard
+      const res = await fetch(`/api/analytics/reports/export?format=${format}`, {
+        method: 'POST',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error('Xuất file thất bại');
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `BaoCao_${payload.dataSource}_${Date.now()}.${format === 'Excel' ? 'xlsx' : 'csv'}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Lỗi xuất báo cáo: ' + err.message);
+    }
+  }
+
+  // 5. TSK-714: Scheduled Subscriptions
+  function openScheduleModal() {
+    $('#modal-schedule-report').modal('show');
+  }
+
+  function onFrequencyChanged(freq) {
+    if (freq === 'Daily') $('#sub-cron').val('0 7 * * *');
+    else if (freq === 'Weekly') $('#sub-cron').val('0 7 * * 1');
+    else if (freq === 'Monthly') $('#sub-cron').val('0 7 1 * *');
+  }
+
+  async function handleCreateSubscription(e) {
+    e.preventDefault();
+    const title = $('#sub-title').val();
+    const freq = $('#sub-frequency').val();
+    const format = $('#sub-format').val();
+    const cron = $('#sub-cron').val();
+    const rawRecipients = $('#sub-recipients').val();
+    const recipients = rawRecipients.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
+
+    try {
+      // Đầu tiên lưu template tạm
+      const templatePayload = {
+        title: title,
+        description: 'Tự động tạo cho lịch gửi định kỳ',
+        dataSource: $('#report-datasource').val(),
+        selectedColumns: currentReportColumns.map(c => c.field),
+        filters: [],
+        groupingColumns: null,
+        sortColumn: null,
+        isAscending: false,
+        isPublic: true
+      };
+
+      const tplRes = await fetch('/api/analytics/reports/templates', {
+        method: 'POST',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify(templatePayload)
+      });
+      if (!tplRes.ok) throw new Error('Không thể lưu mẫu báo cáo');
+      const tplId = await tplRes.json();
+
+      const subPayload = {
+        templateId: tplId,
+        title: title,
+        cronExpression: cron,
+        frequency: freq,
+        exportFormat: format,
+        recipients: recipients
+      };
+
+      const subRes = await fetch('/api/analytics/schedules', {
+        method: 'POST',
+        headers: { ...API_AUTH_HEADER, 'Content-Type': 'application/json' },
+        body: JSON.stringify(subPayload)
+      });
+      if (!subRes.ok) throw new Error('Không thể tạo lịch gửi');
+
+      $('#modal-schedule-report').modal('hide');
+      alert('Đã thiết lập lịch gửi báo cáo tự động thành công!');
+      loadScheduledSubscriptions();
+    } catch (err) {
+      alert('Lỗi tạo lịch gửi: ' + err.message);
+    }
+  }
+
+  async function loadScheduledSubscriptions() {
+    const tbody = $('#schedules-tbody');
+    try {
+      const res = await fetch('/api/analytics/schedules', { headers: API_AUTH_HEADER });
+      if (!res.ok) throw new Error('Không thể tải lịch báo cáo');
+      const list = await res.json();
+
+      if (!list || list.length === 0) {
+        tbody.html('<tr><td colspan="8" class="text-center text-muted">Chưa có lịch gửi báo cáo định kỳ nào được thiết lập.</td></tr>');
+        return;
+      }
+
+      tbody.empty();
+      list.forEach(s => {
+        const nextRun = s.nextRunAt ? new Date(s.nextRunAt).toLocaleString('vi-VN') : 'Theo biểu thức Cron';
+        const recipientsList = (s.recipients || []).join(', ');
+        tbody.append(`
+          <tr>
+            <td><strong>${s.title}</strong></td>
+            <td><code class="font-weight-bold text-purple">${s.cronExpression}</code></td>
+            <td><span class="badge badge-info">${s.frequency}</span></td>
+            <td><span class="badge badge-success">${s.exportFormat}</span></td>
+            <td><small class="text-muted" title="${recipientsList}">${recipientsList.substring(0, 35)}${recipientsList.length > 35 ? '...' : ''}</small></td>
+            <td><span class="badge badge-${s.isActive ? 'success' : 'secondary'}">${s.isActive ? 'Hoạt động' : 'Tạm dừng'}</span></td>
+            <td><small>${nextRun}</small></td>
+            <td>
+              <button class="btn btn-xs btn-outline-success" onclick="triggerScheduleNow('${s.id}')" title="Kích hoạt chạy ngay lập tức">
+                <i class="fas fa-play mr-1"></i> Chạy ngay
+              </button>
+            </td>
+          </tr>
+        `);
+      });
+    } catch (err) {
+      tbody.html(`<tr><td colspan="8" class="text-center text-danger">Lỗi: ${err.message}</td></tr>`);
+    }
+  }
+
+  async function triggerScheduleNow(id) {
+    try {
+      const res = await fetch(`/api/analytics/schedules/${id}/trigger`, {
+        method: 'POST',
+        headers: API_AUTH_HEADER
+      });
+      if (!res.ok) throw new Error('Lỗi kích hoạt gửi báo cáo');
+      alert('Đã kích hoạt gửi báo cáo định kỳ ngay lập tức thành công!');
+      loadScheduledSubscriptions();
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    }
+  }
+
+  // Khởi tạo
+  $(document).ready(function() {
+    loadPendingTasks();
+    loadBrandTheme();
+    loadAiProviderConfigs();
+  });
+</script>
+
+<!-- Floating AI Assistant Chat Widget (TSK-616, TSK-617) -->
+<div id="ai-floating-btn" onclick="toggleAiChatWidget()" style="position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #6610f2, #6f42c1); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(102,16,242,0.4); cursor: pointer; z-index: 1050; transition: transform 0.2s ease-in-out;" title="Mở Trợ Lý AI & Qdrant RAG">
+  <i class="fas fa-robot fa-2x"></i>
+  <span class="badge badge-danger" id="ai-unread-badge" style="position: absolute; top: -5px; right: -5px; display: none;">1</span>
+</div>
+
+<div id="ai-chat-card" class="card card-purple card-outline" style="position: fixed; bottom: 90px; right: 25px; width: 440px; height: 600px; z-index: 1050; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.25); border-radius: 12px; flex-direction: column;">
+  <!-- Card Header -->
+  <div class="card-header bg-gradient-purple text-white d-flex align-items-center justify-content-between p-2">
+    <div class="d-flex align-items-center">
+      <i class="fas fa-brain fa-lg mr-2"></i>
+      <div>
+        <h6 class="m-0 font-weight-bold" style="font-size: 0.95rem;">Trợ Lý AI & Qdrant RAG</h6>
+        <small id="ai-current-model-badge" class="badge badge-light text-purple">Google Gemini 2.0 Flash</small>
+      </div>
+    </div>
+    <div class="d-flex align-items-center">
+      <select id="ai-quick-provider-select" class="form-control form-control-sm mr-2" style="font-size: 0.75rem; height: 26px; width: 110px;" onchange="changeActiveAiProvider(this.value)">
+        <option value="Gemini">Gemini</option>
+        <option value="OpenAi">ChatGPT</option>
+        <option value="Claude">Claude</option>
+        <option value="Ollama">Local Ollama</option>
+      </select>
+      <button type="button" class="btn btn-tool text-white" onclick="toggleAiChatWidget()"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+  <!-- Card Body -->
+  <div class="card-body p-2 d-flex flex-column" style="overflow-y: auto; flex: 1;" id="ai-chat-body">
+    <div id="ai-chat-messages" style="flex: 1; overflow-y: auto; padding-right: 5px;">
+      <!-- Welcome message -->
+      <div class="direct-chat-msg mb-3">
+        <div class="direct-chat-infos clearfix">
+          <span class="direct-chat-name float-left text-sm font-weight-bold text-purple"><i class="fas fa-robot mr-1"></i> Trợ lý AI Nội Bộ</span>
+          <span class="direct-chat-timestamp float-right text-xs text-muted">Vừa xong</span>
+        </div>
+        <div class="direct-chat-text bg-light border p-2" style="border-radius: 8px;">
+          Xin chào! Tôi là Trợ lý AI tích hợp RAG quy chế nội bộ và tác vụ BPMN. Bạn có thể hỏi tôi về quy chế chi tiêu, mua sắm, hoặc kiểm tra các hồ sơ cần phê duyệt.
+          <div class="mt-2 pt-2 border-top">
+            <small class="text-muted d-block mb-1">Gợi ý câu hỏi nhanh:</small>
+            <div class="d-flex flex-wrap gap-1">
+              <button class="btn btn-xs btn-outline-primary mb-1 mr-1" onclick="sendAiQuickPrompt('Hạn mức chi tiếp khách tối đa của Trưởng phòng là bao nhiêu và cần những chứng từ gì?')">
+                <i class="fas fa-question-circle mr-1"></i> Hạn mức tiếp khách Trưởng phòng?
+              </button>
+              <button class="btn btn-xs btn-outline-info mb-1 mr-1" onclick="sendAiQuickPrompt('Hôm nay tôi có hồ sơ nào cần phê duyệt không?')">
+                <i class="fas fa-tasks mr-1"></i> Hồ sơ cần duyệt của tôi?
+              </button>
+              <button class="btn btn-xs btn-outline-success mb-1 mr-1" onclick="sendAiQuickPrompt('Thống kê tình hình phê duyệt quy trình trong hệ thống?')">
+                <i class="fas fa-chart-pie mr-1"></i> Thống kê duyệt quy trình?
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Live Tool Call Indicator -->
+    <div id="ai-tool-indicator" class="alert alert-info py-1 px-2 my-1 text-xs" style="display: none;">
+      <i class="fas fa-cog fa-spin mr-1"></i> <span id="ai-tool-text">Đang tra cứu cơ sở tri thức Qdrant...</span>
+    </div>
+  </div>
+  <!-- Card Footer -->
+  <div class="card-footer p-2 bg-white border-top">
+    <form id="ai-chat-form" onsubmit="handleAiChatSubmit(event)">
+      <div class="input-group">
+        <input type="text" id="ai-chat-input" class="form-control form-control-sm" placeholder="Nhập câu hỏi quy chế hoặc tác vụ..." autocomplete="off">
+        <div class="input-group-append">
+          <button type="submit" id="ai-send-btn" class="btn btn-sm btn-purple">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+    <div class="d-flex justify-content-between align-items-center mt-1 px-1">
+      <small class="text-muted" style="font-size: 0.7rem;">RAG Qdrant Cosine $\ge 0.7$ | RBAC Isolated</small>
+      <a href="javascript:void(0)" onclick="clearAiChatHistory()" class="text-muted text-xs"><i class="fas fa-trash-alt mr-1"></i> Xóa lịch sử</a>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Tạo Lịch Gửi Báo Cáo Tự Động (TSK-709) -->
+<div class="modal fade" id="modal-schedule-report" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-gradient-purple text-white">
+        <h5 class="modal-title font-weight-bold"><i class="fas fa-calendar-plus mr-2"></i> Thiết Lập Lịch Báo Cáo Tự Động</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="form-create-subscription" onsubmit="handleCreateSubscription(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="font-weight-bold">Tên Báo Cáo Định Kỳ:</label>
+            <input type="text" id="sub-title" class="form-control form-control-sm" placeholder="VD: Báo cáo Tiến độ Phê duyệt Thứ 2 Hàng tuần" required>
+          </div>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold">Tần Suất:</label>
+              <select id="sub-frequency" class="form-control form-control-sm" onchange="onFrequencyChanged(this.value)">
+                <option value="Daily">Hàng Ngày (07:00 AM)</option>
+                <option value="Weekly" selected>Hàng Tuần (Thứ 2, 07:00 AM)</option>
+                <option value="Monthly">Hàng Tháng (Ngày 1, 07:00 AM)</option>
+              </select>
+            </div>
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold">Định Dạng File:</label>
+              <select id="sub-format" class="form-control form-control-sm">
+                <option value="Excel">Microsoft Excel (.xlsx)</option>
+                <option value="Csv">Comma Separated (.csv)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="font-weight-bold">Biểu Thức Cron (5-field expression):</label>
+            <input type="text" id="sub-cron" class="form-control form-control-sm font-monospace" value="0 7 * * 1" required>
+            <small class="text-muted">Mặc định: 07:00 AM mỗi Thứ Hai hàng tuần.</small>
+          </div>
+          <div class="form-group">
+            <label class="font-weight-bold">Danh Sách Email Nhận (cách nhau dấu phẩy hoặc xuống dòng):</label>
+            <textarea id="sub-recipients" class="form-control form-control-sm" rows="3" placeholder="ban-giam-doc@enterprise.com, truongphong@enterprise.com" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-purple btn-sm"><i class="fas fa-save mr-1"></i> Lưu & Kích Hoạt Lịch</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EnterpriseBpm.AiAssistant.Domain\EnterpriseBpm.AiAssistant.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\EnterpriseBpm.SharedKernel\EnterpriseBpm.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\..\Shared\EnterpriseBpm.EventBus\EnterpriseBpm.EventBus.csproj" />
+    <ProjectReference Include="..\..\InternalNews\EnterpriseBpm.InternalNews.Domain\EnterpriseBpm.InternalNews.Domain.csproj" />
+    <ProjectReference Include="..\..\Workflow\EnterpriseBpm.Workflow.Domain\EnterpriseBpm.Workflow.Domain.csproj" />
+    <ProjectReference Include="..\..\Workflow\EnterpriseBpm.Workflow.Application\EnterpriseBpm.Workflow.Application.csproj" />
+    <ProjectReference Include="..\..\Document\EnterpriseBpm.Document.Application\EnterpriseBpm.Document.Application.csproj" />
+    <ProjectReference Include="..\..\SystemSettings\EnterpriseBpm.SystemSettings.Application\EnterpriseBpm.SystemSettings.Application.csproj" />
+  </ItemGroup>
+
+</Project>
+

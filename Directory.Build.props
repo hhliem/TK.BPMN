@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>13.0</LangVersion>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Company>Enterprise BPMN Platform</Company>
+    <Product>Enterprise BPMN Modular Monolith</Product>
+    <Copyright>Copyright © 2026</Copyright>
+  </PropertyGroup>
+</Project>
+

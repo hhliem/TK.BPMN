@@ -1,0 +1,29 @@
+## Build and output directories
+[Bb]in/
+[Oo]bj/
+out/
+TestResults/
+*.trx
+coverage.cobertura.xml
+
+## Visual Studio & VS Code
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+## Log files
+*.log
+build_app.log
+build_err.log
+build_out.txt
+
+## OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+## Local test and scratch
+scratch/
+

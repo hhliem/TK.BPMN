@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiến Trúc Multi-Provider AI Assistant & RAG - Sprint 06</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .header-panel { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-bottom: 1px solid #334155; padding: 24px 0; }
+    .card-diagram { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); overflow: hidden; }
+    .nav-tabs .nav-link { color: #94a3b8; border: none; font-weight: 600; padding: 12px 20px; }
+    .nav-tabs .nav-link.active { color: #38bdf8; background-color: #1e293b; border-bottom: 2px solid #38bdf8; }
+    .tab-content { padding: 25px; background-color: #ffffff; border-radius: 0 0 12px 12px; min-height: 700px; }
+    .svg-container { width: 100%; display: flex; justify-content: center; }
+    .svg-container img { max-width: 100%; height: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; }
+    .mermaid-container { width: 100%; display: flex; justify-content: center; color: #0f172a; }
+    .btn-action { margin-left: 8px; font-weight: 500; }
+  </style>
+</head>
+<body>
+
+  <div class="header-panel">
+    <div class="container-fluid px-5">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="badge badge-primary px-3 py-1 mb-2 font-weight-bold">SPRINT 06 ARCHITECTURE</span>
+          <h2 class="font-weight-bold mb-1"><i class="fas fa-brain text-info mr-2"></i> Kiến Trúc Multi-Provider AI Assistant & Qdrant RAG</h2>
+          <p class="text-muted mb-0">Hỗ trợ cắm-và-chạy giữa Google Gemini, OpenAI ChatGPT, Anthropic Claude & Local MCP Server</p>
+        </div>
+        <div>
+          <a href="sprint-06-multi-provider-ai-architecture.svg" download="sprint-06-multi-provider-ai-architecture.svg" class="btn btn-outline-info btn-action">
+            <i class="fas fa-download mr-1"></i> Tải ảnh Vector SVG
+          </a>
+          <a href="sprint-06-multi-provider-ai-architecture.mmd" download="sprint-06-multi-provider-ai-architecture.mmd" class="btn btn-outline-light btn-action">
+            <i class="fas fa-file-code mr-1"></i> Tải mã Mermaid (.mmd)
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid px-5 my-4">
+    <div class="card card-diagram">
+      <div class="card-header p-0 border-bottom-0">
+        <ul class="nav nav-tabs" id="diagramTabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="svg-tab" data-toggle="tab" href="#svg-view" role="tab">
+              <i class="fas fa-image mr-1"></i> Bản Vẽ Đồ Họa Vector (SVG Rendered)
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="mermaid-tab" data-toggle="tab" href="#mermaid-view" role="tab">
+              <i class="fas fa-project-diagram mr-1"></i> Sơ Đồ Mermaid.js Tương Tác
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="code-tab" data-toggle="tab" href="#code-view" role="tab">
+              <i class="fas fa-code mr-1"></i> Mã Nguồn Mermaid Source
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tab-content">
+        <!-- TAB 1: SVG IMAGE -->
+        <div class="tab-pane fade show active" id="svg-view" role="tabpanel">
+          <div class="svg-container">
+            <img src="sprint-06-multi-provider-ai-architecture.svg" alt="Sơ đồ Kiến trúc Multi-Provider AI">
+          </div>
+        </div>
+
+        <!-- TAB 2: MERMAID INTERACTIVE -->
+        <div class="tab-pane fade" id="mermaid-view" role="tabpanel">
+          <div class="mermaid-container">
+            <pre class="mermaid">
+flowchart TD
+    subgraph UI["Giao Diện Người Dùng (AdminLTE 3)"]
+        ChatWidget["Floating AI Assistant Widget<br/>(SSE Streaming, Markdown, Citation Pills)"]
+        AdminConfig["AI Provider Settings<br/>(Gemini / OpenAI / Claude / Local LLM)"]
+    end
+
+    subgraph Host["API Host & Module AiAssistant"]
+        AiGateway["Multi-Provider AI Gateway & Factory<br/>(IAiChatClient / IAiProviderFactory)"]
+        ToolRegistry["Unified C# Tool Registry<br/>(Parameter Validation & Context Injection)"]
+        SecureStore["Credential Manager<br/>(At-Rest Encryption via IDataProtectionProvider)"]
+    end
+
+    subgraph Providers["Các Nhà Cung Cấp AI (Plug-and-Play)"]
+        P_Gemini["Google Gemini API<br/>(Gemini 1.5 Pro/Flash, 2.0)"]
+        P_OpenAI["OpenAI API<br/>(GPT-4o, GPT-4o-mini)"]
+        P_Claude["Anthropic Claude API<br/>(Claude 3.5 Sonnet, Haiku)"]
+        P_Local["Local LLM (Ollama / vLLM)<br/>via MCP Server (JSON-RPC)"]
+    end
+
+    subgraph Tools["C# Tools An Toàn Phân Quyền (RBAC/ABAC)"]
+        Tool_Policy["search_company_policy<br/>(Cosine Sim >= 0.7)"]
+        Tool_Tasks["get_my_pending_tasks<br/>(CurrentUserId Injected)"]
+        Tool_Stats["get_approval_stats<br/>(Scoped to OrgUnit/Role)"]
+    end
+
+    subgraph Knowledge["Cơ Sở Tri Thức Véc-tơ (RAG)"]
+        Chunker["Document Chunker<br/>(500 tokens, 50 overlap)"]
+        Embedder["Embedding Engine<br/>(Local BGE-M3 / OpenAI / Gemini Embeddings)"]
+        Qdrant["Qdrant Vector Database<br/>(Collection: company_policies)"]
+        OneDrive["OneDrive For Business<br/>(Source PDF/Word Documents)"]
+    end
+
+    ChatWidget -->|Prompt & SSE Stream| AiGateway
+    AdminConfig -->|Lưu & Mã hóa API Key| SecureStore
+    SecureStore -->|Cấp Secret Đã Giải Mã| AiGateway
+
+    AiGateway -->|Định tuyến cấu hình| P_Gemini
+    AiGateway -->|Định tuyến cấu hình| P_OpenAI
+    AiGateway -->|Định tuyến cấu hình| P_Claude
+    AiGateway -->|Định tuyến mạng nội bộ| P_Local
+
+    P_Gemini -.->|Function Calling| ToolRegistry
+    P_OpenAI -.->|Tool Calling| ToolRegistry
+    P_Claude -.->|Tool Use| ToolRegistry
+    P_Local -.->|MCP Tools Call| ToolRegistry
+
+    ToolRegistry --> Tool_Policy
+    ToolRegistry --> Tool_Tasks
+    ToolRegistry --> Tool_Stats
+
+    Tool_Policy -->|Semantic Search| Qdrant
+    OneDrive --> Chunker --> Embedder --> Qdrant
+            </pre>
+          </div>
+        </div>
+
+        <!-- TAB 3: MERMAID CODE -->
+        <div class="tab-pane fade" id="code-view" role="tabpanel">
+          <pre style="background: #0f172a; color: #38bdf8; padding: 20px; border-radius: 8px; font-size: 14px; overflow-x: auto;">
+flowchart TD
+    subgraph UI["Giao Diện Người Dùng (AdminLTE 3)"]
+        ChatWidget["Floating AI Assistant Widget<br/>(SSE Streaming, Markdown, Citation Pills)"]
+        AdminConfig["AI Provider Settings<br/>(Gemini / OpenAI / Claude / Local LLM)"]
+    end
+
+    subgraph Host["API Host & Module AiAssistant"]
+        AiGateway["Multi-Provider AI Gateway & Factory<br/>(IAiChatClient / IAiProviderFactory)"]
+        ToolRegistry["Unified C# Tool Registry<br/>(Parameter Validation & Context Injection)"]
+        SecureStore["Credential Manager<br/>(At-Rest Encryption via IDataProtectionProvider)"]
+    end
+
+    subgraph Providers["Các Nhà Cung Cấp AI (Plug-and-Play)"]
+        P_Gemini["Google Gemini API<br/>(Gemini 1.5 Pro/Flash, 2.0)"]
+        P_OpenAI["OpenAI API<br/>(GPT-4o, GPT-4o-mini)"]
+        P_Claude["Anthropic Claude API<br/>(Claude 3.5 Sonnet, Haiku)"]
+        P_Local["Local LLM (Ollama / vLLM)<br/>via MCP Server (JSON-RPC)"]
+    end
+
+    subgraph Tools["C# Tools An Toàn Phân Quyền (RBAC/ABAC)"]
+        Tool_Policy["search_company_policy<br/>(Cosine Sim >= 0.7)"]
+        Tool_Tasks["get_my_pending_tasks<br/>(CurrentUserId Injected)"]
+        Tool_Stats["get_approval_stats<br/>(Scoped to OrgUnit/Role)"]
+    end
+
+    subgraph Knowledge["Cơ Sở Tri Thức Véc-tơ (RAG)"]
+        Chunker["Document Chunker<br/>(500 tokens, 50 overlap)"]
+        Embedder["Embedding Engine<br/>(Local BGE-M3 / OpenAI / Gemini Embeddings)"]
+        Qdrant["Qdrant Vector Database<br/>(Collection: company_policies)"]
+        OneDrive["OneDrive For Business<br/>(Source PDF/Word Documents)"]
+    end
+
+    ChatWidget -->|Prompt & SSE Stream| AiGateway
+    AdminConfig -->|Lưu & Mã hóa API Key| SecureStore
+    SecureStore -->|Cấp Secret Đã Giải Mã| AiGateway
+
+    AiGateway -->|Định tuyến cấu hình| P_Gemini
+    AiGateway -->|Định tuyến cấu hình| P_OpenAI
+    AiGateway -->|Định tuyến cấu hình| P_Claude
+    AiGateway -->|Định tuyến mạng nội bộ| P_Local
+
+    P_Gemini -.->|Function Calling| ToolRegistry
+    P_OpenAI -.->|Tool Calling| ToolRegistry
+    P_Claude -.->|Tool Use| ToolRegistry
+    P_Local -.->|MCP Tools Call| ToolRegistry
+
+    ToolRegistry --> Tool_Policy
+    ToolRegistry --> Tool_Tasks
+    ToolRegistry --> Tool_Stats
+
+    Tool_Policy -->|Semantic Search| Qdrant
+    OneDrive --> Chunker --> Embedder --> Qdrant
+          </pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>
+

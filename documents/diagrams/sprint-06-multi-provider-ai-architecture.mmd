@@ -1,0 +1,53 @@
+flowchart TD
+    subgraph UI["Giao Diện Người Dùng (AdminLTE 3)"]
+        ChatWidget["Floating AI Assistant Widget\n(SSE Streaming, Markdown, Citation Pills)"]
+        AdminConfig["AI Provider Settings\n(Gemini / OpenAI / Claude / Local LLM)"]
+    end
+
+    subgraph Host["API Host & Module AiAssistant"]
+        AiGateway["Multi-Provider AI Gateway & Factory\n(IAiChatClient / IAiProviderFactory)"]
+        ToolRegistry["Unified C# Tool Registry\n(Parameter Validation & Context Injection)"]
+        SecureStore["Credential Manager\n(At-Rest Encryption via IDataProtectionProvider)"]
+    end
+
+    subgraph Providers["Các Nhà Cung Cấp AI (Plug-and-Play)"]
+        P_Gemini["Google Gemini API\n(Gemini 1.5 Pro/Flash, 2.0)"]
+        P_OpenAI["OpenAI API\n(GPT-4o, GPT-4o-mini)"]
+        P_Claude["Anthropic Claude API\n(Claude 3.5 Sonnet, Haiku)"]
+        P_Local["Local LLM (Ollama / vLLM)\nvia MCP Server (JSON-RPC)"]
+    end
+
+    subgraph Tools["C# Tools An Toàn Phân Quyền (RBAC/ABAC)"]
+        Tool_Policy["search_company_policy\n(Cosine Sim >= 0.7)"]
+        Tool_Tasks["get_my_pending_tasks\n(CurrentUserId Injected)"]
+        Tool_Stats["get_approval_stats\n(Scoped to OrgUnit/Role)"]
+    end
+
+    subgraph Knowledge["Cơ Sở Tri Thức Véc-tơ (RAG)"]
+        Chunker["Document Chunker\n(500 tokens, 50 overlap)"]
+        Embedder["Embedding Engine\n(Local BGE-M3 / OpenAI / Gemini Embeddings)"]
+        Qdrant["Qdrant Vector Database\n(Collection: company_policies)"]
+        OneDrive["OneDrive For Business\n(Source PDF/Word Documents)"]
+    end
+
+    ChatWidget -->|Prompt & SSE Stream| AiGateway
+    AdminConfig -->|Lưu & Mã hóa API Key| SecureStore
+    SecureStore -->|Cấp Secret Đã Giải Mã| AiGateway
+
+    AiGateway -->|Định tuyến cấu hình| P_Gemini
+    AiGateway -->|Định tuyến cấu hình| P_OpenAI
+    AiGateway -->|Định tuyến cấu hình| P_Claude
+    AiGateway -->|Định tuyến mạng nội bộ| P_Local
+
+    P_Gemini -.->|Function Calling| ToolRegistry
+    P_OpenAI -.->|Tool Calling| ToolRegistry
+    P_Claude -.->|Tool Use| ToolRegistry
+    P_Local -.->|MCP Tools Call| ToolRegistry
+
+    ToolRegistry --> Tool_Policy
+    ToolRegistry --> Tool_Tasks
+    ToolRegistry --> Tool_Stats
+
+    Tool_Policy -->|Semantic Search| Qdrant
+    OneDrive --> Chunker --> Embedder --> Qdrant
+

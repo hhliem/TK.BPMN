@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EnterpriseBpm.Analytics.Application\EnterpriseBpm.Analytics.Application.csproj" />
+    <ProjectReference Include="..\EnterpriseBpm.Analytics.Domain\EnterpriseBpm.Analytics.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\EnterpriseBpm.SharedKernel\EnterpriseBpm.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\..\Shared\EnterpriseBpm.EventBus\EnterpriseBpm.EventBus.csproj" />
+    <ProjectReference Include="..\..\Notification\EnterpriseBpm.Notification.Application\EnterpriseBpm.Notification.Application.csproj" />
+    <ProjectReference Include="..\..\Workflow\EnterpriseBpm.Workflow.Infrastructure\EnterpriseBpm.Workflow.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
+  </ItemGroup>
+
+</Project>
+

@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Trình Thiết Kế Quy Trình BPMN";
+    Layout = "_Layout";
+}
+
+<div class="content-wrapper" style="min-height: calc(100vh - 57px);">
+    <section class="content-header py-2">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <h4 class="m-0 text-dark font-weight-bold">Sơ Đồ Quy Trình Phê Duyệt</h4>
+            <span class="badge badge-success px-3 py-2">Elsa Workflows v3.3 Connected</span>
+        </div>
+    </section>
+
+    <section class="content px-3">
+        <div class="card card-outline card-primary shadow-sm h-100">
+            <div class="card-body p-0" style="height: 82vh;">
+                <iframe id="elsaStudioFrame"
+                        src="/studio"
+                        style="width: 100%; height: 100%; border: none;"
+                        allow="clipboard-read; clipboard-write">
+                </iframe>
+            </div>
+        </div>
+    </section>
+</div>

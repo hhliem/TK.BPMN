@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EnterpriseBpm.AccessGovernance.Application\EnterpriseBpm.AccessGovernance.Application.csproj" />
+    <ProjectReference Include="..\EnterpriseBpm.AccessGovernance.Domain\EnterpriseBpm.AccessGovernance.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\EnterpriseBpm.SharedKernel\EnterpriseBpm.SharedKernel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.2" />
+  </ItemGroup>
+
+</Project>

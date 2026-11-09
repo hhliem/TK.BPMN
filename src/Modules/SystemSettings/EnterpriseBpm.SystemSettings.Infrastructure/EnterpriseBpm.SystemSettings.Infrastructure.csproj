@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EnterpriseBpm.SystemSettings.Application\EnterpriseBpm.SystemSettings.Application.csproj" />
+    <ProjectReference Include="..\EnterpriseBpm.SystemSettings.Domain\EnterpriseBpm.SystemSettings.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\EnterpriseBpm.SharedKernel\EnterpriseBpm.SharedKernel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.2" />
+  </ItemGroup>
+
+</Project>
+

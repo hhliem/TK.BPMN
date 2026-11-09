@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EnterpriseBpm.Notification.Domain\EnterpriseBpm.Notification.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\EnterpriseBpm.SharedKernel\EnterpriseBpm.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\..\Shared\EnterpriseBpm.EventBus\EnterpriseBpm.EventBus.csproj" />
+    <ProjectReference Include="..\..\Workflow\EnterpriseBpm.Workflow.Application\EnterpriseBpm.Workflow.Application.csproj" />
+    <ProjectReference Include="..\..\Org\EnterpriseBpm.Org.Application\EnterpriseBpm.Org.Application.csproj" />
+  </ItemGroup>
+
+</Project>
+

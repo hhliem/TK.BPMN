@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Shared\EnterpriseBpm.SharedKernel\EnterpriseBpm.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\src\Shared\EnterpriseBpm.EventBus\EnterpriseBpm.EventBus.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Org\EnterpriseBpm.Org.Domain\EnterpriseBpm.Org.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Form\EnterpriseBpm.Form.Domain\EnterpriseBpm.Form.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Workflow\EnterpriseBpm.Workflow.Domain\EnterpriseBpm.Workflow.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Document\EnterpriseBpm.Document.Domain\EnterpriseBpm.Document.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Notification\EnterpriseBpm.Notification.Domain\EnterpriseBpm.Notification.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Notification\EnterpriseBpm.Notification.Application\EnterpriseBpm.Notification.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Notification\EnterpriseBpm.Notification.Infrastructure\EnterpriseBpm.Notification.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\InternalNews\EnterpriseBpm.InternalNews.Domain\EnterpriseBpm.InternalNews.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\InternalNews\EnterpriseBpm.InternalNews.Application\EnterpriseBpm.InternalNews.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\SystemSettings\EnterpriseBpm.SystemSettings.Domain\EnterpriseBpm.SystemSettings.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\SystemSettings\EnterpriseBpm.SystemSettings.Application\EnterpriseBpm.SystemSettings.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\SystemSettings\EnterpriseBpm.SystemSettings.Infrastructure\EnterpriseBpm.SystemSettings.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Org\EnterpriseBpm.Org.Application\EnterpriseBpm.Org.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Workflow\EnterpriseBpm.Workflow.Application\EnterpriseBpm.Workflow.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Workflow\EnterpriseBpm.Workflow.Infrastructure\EnterpriseBpm.Workflow.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Document\EnterpriseBpm.Document.Application\EnterpriseBpm.Document.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Document\EnterpriseBpm.Document.Infrastructure\EnterpriseBpm.Document.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AiAssistant\EnterpriseBpm.AiAssistant.Domain\EnterpriseBpm.AiAssistant.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AiAssistant\EnterpriseBpm.AiAssistant.Application\EnterpriseBpm.AiAssistant.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AiAssistant\EnterpriseBpm.AiAssistant.Infrastructure\EnterpriseBpm.AiAssistant.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Analytics\EnterpriseBpm.Analytics.Domain\EnterpriseBpm.Analytics.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Analytics\EnterpriseBpm.Analytics.Application\EnterpriseBpm.Analytics.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Analytics\EnterpriseBpm.Analytics.Infrastructure\EnterpriseBpm.Analytics.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,31 @@
+{
+  "display": "form",
+  "components": [
+    {
+      "label": "Đơn Vị / Phòng Ban",
+      "key": "departmentId",
+      "type": "select",
+      "dataSrc": "url",
+      "data": {
+        "url": "/api/master-data/departments"
+      },
+      "valueProperty": "id",
+      "template": "<span>{{ item.code }} - {{ item.name }}</span>",
+      "validate": { "required": true }
+    },
+    {
+      "label": "Chức Danh Phụ Trách",
+      "key": "positionId",
+      "type": "select",
+      "dataSrc": "url",
+      "data": {
+        "url": "/api/master-data/positions?departmentId={{ data.departmentId }}"
+      },
+      "valueProperty": "id",
+      "template": "<span>{{ item.name }}</span>",
+      "refreshOn": "departmentId",
+      "clearOnRefresh": true,
+      "validate": { "required": true }
+    }
+  ]
+}

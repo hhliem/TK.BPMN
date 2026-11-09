@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Shared\EnterpriseBpm.SharedKernel\EnterpriseBpm.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\src\Shared\EnterpriseBpm.EventBus\EnterpriseBpm.EventBus.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AuditLog\EnterpriseBpm.AuditLog.Domain\EnterpriseBpm.AuditLog.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AuditLog\EnterpriseBpm.AuditLog.Application\EnterpriseBpm.AuditLog.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AuditLog\EnterpriseBpm.AuditLog.Infrastructure\EnterpriseBpm.AuditLog.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AuditLog\EnterpriseBpm.AuditLog.Presentation\EnterpriseBpm.AuditLog.Presentation.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AccessGovernance\EnterpriseBpm.AccessGovernance.Domain\EnterpriseBpm.AccessGovernance.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AccessGovernance\EnterpriseBpm.AccessGovernance.Application\EnterpriseBpm.AccessGovernance.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AccessGovernance\EnterpriseBpm.AccessGovernance.Infrastructure\EnterpriseBpm.AccessGovernance.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\AccessGovernance\EnterpriseBpm.AccessGovernance.Presentation\EnterpriseBpm.AccessGovernance.Presentation.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Org\EnterpriseBpm.Org.Domain\EnterpriseBpm.Org.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Org\EnterpriseBpm.Org.Application\EnterpriseBpm.Org.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Org\EnterpriseBpm.Org.Infrastructure\EnterpriseBpm.Org.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Org\EnterpriseBpm.Org.Presentation\EnterpriseBpm.Org.Presentation.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Form\EnterpriseBpm.Form.Domain\EnterpriseBpm.Form.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Form\EnterpriseBpm.Form.Application\EnterpriseBpm.Form.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Form\EnterpriseBpm.Form.Infrastructure\EnterpriseBpm.Form.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Form\EnterpriseBpm.Form.Presentation\EnterpriseBpm.Form.Presentation.csproj" />
+  </ItemGroup>
+
+</Project>

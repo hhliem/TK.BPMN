@@ -1,0 +1,261 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1020" width="100%" height="100%">
+  <defs>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 24px; font-weight: 700; fill: #0f172a; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 400; fill: #475569; }
+      .group-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; }
+      .node-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; font-weight: 600; }
+      .node-desc { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 400; fill: #64748b; }
+      .edge-label { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 500; fill: #334155; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 10px; font-weight: 700; }
+    </style>
+
+    <!-- Markers for arrows -->
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#0284c7" />
+    </marker>
+    <marker id="arrow-indigo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#4f46e5" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#7c3aed" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#d97706" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#0d9488" />
+    </marker>
+
+    <!-- Drop Shadows -->
+    <filter id="card-shadow" x="-5%" y="-5%" width="110%" height="110%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="1020" fill="#f8fafc" rx="16"/>
+
+  <!-- Header Banner -->
+  <g transform="translate(50, 30)">
+    <rect width="1180" height="70" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#card-shadow)"/>
+    <text x="30" y="36" class="title">🚀 KIẾN TRÚC ENTERPRISE MULTI-PROVIDER AI ASSISTANT &amp; RAG KNOWLEDGE BASE</text>
+    <text x="30" y="56" class="subtitle">Mô hình độc lập (Model-Agnostic): Tích hợp Google Gemini, OpenAI ChatGPT, Anthropic Claude &amp; Local MCP Server</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- 1. GIAO DIỆN NGƯỜI DÙNG (AdminLTE 3) -->
+  <!-- ========================================================================= -->
+  <g transform="translate(50, 125)">
+    <rect width="1180" height="115" rx="12" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/>
+    <text x="24" y="28" class="group-title" fill="#0369a1">💻 1. GIAO DIỆN NGƯỜI DÙNG (Frontend AdminLTE 3 / SPA)</text>
+
+    <!-- Chat Widget -->
+    <g transform="translate(30, 42)">
+      <rect width="520" height="58" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <circle cx="28" cy="29" r="14" fill="#e0f2fe"/>
+      <text x="22" y="34" font-size="14">💬</text>
+      <text x="52" y="27" class="node-title" fill="#0369a1">Floating AI Assistant Chat Widget</text>
+      <text x="52" y="44" class="node-desc">Streaming SSE theo thời gian thực, Render Markdown, Bảng biểu &amp; Citation Pills</text>
+    </g>
+
+    <!-- Admin Settings -->
+    <g transform="translate(630, 42)">
+      <rect width="520" height="58" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <circle cx="28" cy="29" r="14" fill="#e0f2fe"/>
+      <text x="22" y="34" font-size="14">⚙️</text>
+      <text x="52" y="27" class="node-title" fill="#0369a1">Trang Quản Trị Cấu Hình AI (AI Provider Settings)</text>
+      <text x="52" y="44" class="node-desc">Chọn Provider mặc định, quản lý API Keys, điều chỉnh Temperature &amp; Model Version</text>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- 2. HOST & MODULE AI ASSISTANT -->
+  <!-- ========================================================================= -->
+  <g transform="translate(50, 265)">
+    <rect width="1180" height="135" rx="12" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1.5"/>
+    <text x="24" y="28" class="group-title" fill="#4338ca">🧠 2. TẦNG XỬ LÝ LÕI BACKEND (.NET 9 - Module AiAssistant)</text>
+
+    <!-- Multi-Provider Gateway -->
+    <g transform="translate(30, 42)">
+      <rect width="360" height="74" rx="8" fill="#ffffff" stroke="#4f46e5" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="18" y="26" class="node-title" fill="#3730a3">Multi-Provider AI Gateway &amp; Factory</text>
+      <text x="18" y="43" class="node-desc">Interface IAiChatClient &amp; IAiProviderFactory</text>
+      <text x="18" y="60" class="node-desc">Định tuyến động, chuyển đổi Hot-swap theo cấu hình</text>
+    </g>
+
+    <!-- Secure Store -->
+    <g transform="translate(420, 42)">
+      <rect width="340" height="74" rx="8" fill="#ffffff" stroke="#4f46e5" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="18" y="26" class="node-title" fill="#3730a3">Credential Manager (At-Rest Encryption)</text>
+      <text x="18" y="43" class="node-desc">IDataProtectionProvider mã hóa API Keys</text>
+      <text x="18" y="60" class="node-desc">Bảo vệ an toàn Secrets trên cơ sở dữ liệu [settings]</text>
+    </g>
+
+    <!-- Unified Tool Registry -->
+    <g transform="translate(790, 42)">
+      <rect width="360" height="74" rx="8" fill="#ffffff" stroke="#4f46e5" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="18" y="26" class="node-title" fill="#3730a3">Unified C# Tool Registry</text>
+      <text x="18" y="43" class="node-desc">Tự động ánh xạ C# sang Schema Function Calling</text>
+      <text x="18" y="60" class="node-desc">Tương thích Gemini, OpenAI, Claude &amp; MCP</text>
+    </g>
+  </g>
+
+  <!-- Connectors UI -> Host -->
+  <line x1="290" y1="225" x2="210" y2="307" stroke="#0284c7" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <rect x="185" y="240" width="130" height="18" rx="4" fill="#ffffff" stroke="#bae6fd"/>
+  <text x="190" y="253" class="edge-label" fill="#0284c7">Prompt &amp; SSE Stream</text>
+
+  <line x1="890" y1="225" x2="590" y2="307" stroke="#4f46e5" stroke-width="2" marker-end="url(#arrow-indigo)"/>
+  <rect x="710" y="240" width="130" height="18" rx="4" fill="#ffffff" stroke="#c7d2fe"/>
+  <text x="715" y="253" class="edge-label" fill="#4f46e5">Lưu &amp; Mã hóa API Key</text>
+
+  <!-- ========================================================================= -->
+  <!-- 3. CÁC NHÀ CUNG CẤP AI (PLUG-AND-PLAY PROVIDERS) -->
+  <!-- ========================================================================= -->
+  <g transform="translate(50, 425)">
+    <rect width="1180" height="140" rx="12" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1.5"/>
+    <text x="24" y="28" class="group-title" fill="#6d28d9">🤖 3. CÁC NHÀ CUNG CẤP AI (PLUG-AND-PLAY LLM PROVIDERS)</text>
+
+    <!-- Google Gemini -->
+    <g transform="translate(30, 44)">
+      <rect width="265" height="78" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <rect x="10" y="10" width="36" height="20" rx="4" fill="#dbeafe"/>
+      <text x="16" y="24" class="badge" fill="#1d4ed8">CLOUD</text>
+      <text x="56" y="25" class="node-title" fill="#1e3a8a">Google Gemini</text>
+      <text x="12" y="45" class="node-desc">Gemini 1.5 Pro / Flash, 2.0</text>
+      <text x="12" y="62" class="node-desc">Google AI SDK • Function Calling</text>
+    </g>
+
+    <!-- OpenAI ChatGPT -->
+    <g transform="translate(325, 44)">
+      <rect width="265" height="78" rx="8" fill="#ffffff" stroke="#059669" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <rect x="10" y="10" width="36" height="20" rx="4" fill="#d1fae5"/>
+      <text x="16" y="24" class="badge" fill="#047857">CLOUD</text>
+      <text x="56" y="25" class="node-title" fill="#064e3b">OpenAI (ChatGPT)</text>
+      <text x="12" y="45" class="node-desc">GPT-4o, GPT-4o-mini, o1/o3</text>
+      <text x="12" y="62" class="node-desc">OpenAI Client • Tool Calling</text>
+    </g>
+
+    <!-- Anthropic Claude -->
+    <g transform="translate(620, 44)">
+      <rect width="265" height="78" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <rect x="10" y="10" width="36" height="20" rx="4" fill="#fef3c7"/>
+      <text x="16" y="24" class="badge" fill="#b45309">CLOUD</text>
+      <text x="56" y="25" class="node-title" fill="#78350f">Anthropic Claude</text>
+      <text x="12" y="45" class="node-desc">Claude 3.5 Sonnet / Haiku</text>
+      <text x="12" y="62" class="node-desc">Anthropic API • Tool Use Blocks</text>
+    </g>
+
+    <!-- Local LLM / MCP -->
+    <g transform="translate(915, 44)">
+      <rect width="235" height="78" rx="8" fill="#ffffff" stroke="#334155" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <rect x="10" y="10" width="40" height="20" rx="4" fill="#e2e8f0"/>
+      <text x="15" y="24" class="badge" fill="#334155">LOCAL</text>
+      <text x="60" y="25" class="node-title" fill="#0f172a">Local LLM / MCP</text>
+      <text x="12" y="45" class="node-desc">Ollama / vLLM (Llama 3 / Qwen)</text>
+      <text x="12" y="62" class="node-desc">MCP Server • JSON-RPC stdio/SSE</text>
+    </g>
+  </g>
+
+  <!-- Connectors Host -> Providers -->
+  <line x1="160" y1="339" x2="160" y2="469" stroke="#4f46e5" stroke-width="1.5" marker-end="url(#arrow-indigo)"/>
+  <line x1="240" y1="339" x2="440" y2="469" stroke="#4f46e5" stroke-width="1.5" marker-end="url(#arrow-indigo)"/>
+  <line x1="280" y1="339" x2="740" y2="469" stroke="#4f46e5" stroke-width="1.5" marker-end="url(#arrow-indigo)"/>
+  <line x1="320" y1="339" x2="1010" y2="469" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow-indigo)"/>
+
+  <!-- ========================================================================= -->
+  <!-- 4. C# TOOLS AN TOÀN PHÂN QUYỀN (RBAC/ABAC) -->
+  <!-- ========================================================================= -->
+  <g transform="translate(50, 590)">
+    <rect width="1180" height="145" rx="12" fill="#fffbeb" stroke="#fde68a" stroke-width="1.5"/>
+    <text x="24" y="28" class="group-title" fill="#b45309">🛡️ 4. C# TOOLS AN TOÀN PHÂN QUYỀN (RBAC / ABAC CONTEXT INJECTION)</text>
+
+    <!-- Tool 1: search_company_policy -->
+    <g transform="translate(30, 44)">
+      <rect width="360" height="80" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="18" y="26" class="node-title" fill="#92400e">search_company_policy</text>
+      <text x="18" y="44" class="node-desc">Tìm kiếm ngữ nghĩa tài liệu quy chế trong Qdrant</text>
+      <text x="18" y="62" class="node-desc">Cosine similarity ≥ 0.7 • Trích dẫn số trang &amp; link</text>
+    </g>
+
+    <!-- Tool 2: get_my_pending_tasks -->
+    <g transform="translate(420, 44)">
+      <rect width="350" height="80" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="18" y="26" class="node-title" fill="#92400e">get_my_pending_tasks</text>
+      <text x="18" y="44" class="node-desc">Tự động tiêm CurrentUserId từ ClaimsPrincipal</text>
+      <text x="18" y="62" class="node-desc">Tra cứu danh sách task cần phê duyệt của chính người hỏi</text>
+    </g>
+
+    <!-- Tool 3: get_approval_stats -->
+    <g transform="translate(800, 44)">
+      <rect width="350" height="80" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="18" y="26" class="node-title" fill="#92400e">get_approval_stats</text>
+      <text x="18" y="44" class="node-desc">Giới hạn dữ liệu theo OrgUnitId &amp; Role người hỏi</text>
+      <text x="18" y="62" class="node-desc">Ngăn chặn rò rỉ dữ liệu tài chính của cấp lãnh đạo</text>
+    </g>
+  </g>
+
+  <!-- Connectors Providers -> Tools -->
+  <line x1="970" y1="339" x2="970" y2="400"/>
+  <line x1="210" y1="522" x2="210" y2="634" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow-amber)"/>
+  <line x1="460" y1="522" x2="560" y2="634" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow-amber)"/>
+  <line x1="750" y1="522" x2="630" y2="634" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow-amber)"/>
+  <line x1="1000" y1="522" x2="960" y2="634" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow-amber)"/>
+
+  <!-- ========================================================================= -->
+  <!-- 5. PIPELINE RAG & CƠ SỞ TRI THỨC VÉC-TƠ (QDRANT & ONEDRIVE) -->
+  <!-- ========================================================================= -->
+  <g transform="translate(50, 760)">
+    <rect width="1180" height="155" rx="12" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1.5"/>
+    <text x="24" y="28" class="group-title" fill="#0f766e">📚 5. PIPELINE RAG &amp; CƠ SỞ TRI THỨC VÉC-TƠ (QDRANT VECTOR DB &amp; ONEDRIVE)</text>
+
+    <!-- OneDrive Storage -->
+    <g transform="translate(30, 46)">
+      <rect width="250" height="85" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="16" y="26" class="node-title" fill="#115e59">OneDrive Storage</text>
+      <text x="16" y="46" class="node-desc">Kho tài liệu quy chế, biểu mẫu</text>
+      <text x="16" y="64" class="node-desc">Định dạng file: PDF, DOCX gốc</text>
+    </g>
+
+    <!-- Chunker -->
+    <g transform="translate(320, 46)">
+      <rect width="250" height="85" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="16" y="26" class="node-title" fill="#115e59">Document Chunker</text>
+      <text x="16" y="46" class="node-desc">Bẻ nhỏ tài liệu thành các đoạn</text>
+      <text x="16" y="64" class="node-desc">500 tokens • 50 tokens overlap</text>
+    </g>
+
+    <!-- Embedder -->
+    <g transform="translate(610, 46)">
+      <rect width="260" height="85" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="16" y="26" class="node-title" fill="#115e59">Embedding Engine</text>
+      <text x="16" y="46" class="node-desc">Local: BGE-M3 / nomic-embed</text>
+      <text x="16" y="64" class="node-desc">Cloud: OpenAI / Gemini Embeddings</text>
+    </g>
+
+    <!-- Qdrant Vector DB -->
+    <g transform="translate(910, 46)">
+      <rect width="240" height="85" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="16" y="26" class="node-title" fill="#115e59">Qdrant Vector DB</text>
+      <text x="16" y="46" class="node-desc">Collection: company_policies</text>
+      <text x="16" y="64" class="node-desc">Tra cứu tương đồng Cosine cực nhanh</text>
+    </g>
+  </g>
+
+  <!-- Pipeline arrows in Knowledge -->
+  <line x1="280" y1="848" x2="320" y2="848" stroke="#0d9488" stroke-width="2" marker-end="url(#arrow-teal)"/>
+  <line x1="570" y1="848" x2="610" y2="848" stroke="#0d9488" stroke-width="2" marker-end="url(#arrow-teal)"/>
+  <line x1="870" y1="848" x2="910" y2="848" stroke="#0d9488" stroke-width="2" marker-end="url(#arrow-teal)"/>
+
+  <!-- Connector from Policy Tool down to Qdrant -->
+  <line x1="210" y1="714" x2="210" y2="745"/>
+  <line x1="210" y1="745" x2="1030" y2="745"/>
+  <line x1="1030" y1="745" x2="1030" y2="806" stroke="#0d9488" stroke-width="2" marker-end="url(#arrow-teal)"/>
+  <rect x="520" y="736" width="170" height="18" rx="4" fill="#ffffff" stroke="#99f6e4"/>
+  <text x="525" y="749" class="edge-label" fill="#0f766e">Semantic Cosine Search</text>
+
+  <!-- Footer -->
+  <text x="50" y="945" class="node-desc">© 2026 Enterprise BPM Platform • Hệ thống BPMN Modular Monolith .NET 9</text>
+  <text x="1000" y="945" class="badge" fill="#64748b">SPRINT 06 ARCHITECTURE</text>
+</svg>
