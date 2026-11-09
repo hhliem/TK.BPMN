@@ -1,21 +1,43 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "sqlproj: Build Virtual Office",
-			"type": "process",
-			"command": "dotnet",
-			"args": [
-				"build",
-				"d:/My Project/TK.BPMN/Virtual Office/Virtual Office.sqlproj"
-			],
-			"problemMatcher": "$sqlproj-problem-matcher",
-			"isBackground": true,
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"detail": "Builds the Virtual Office SQL project"
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Backend: Run API Host",
+      "type": "shell",
+      "command": "dotnet run --project src/Host/EnterpriseBpm.ApiHost/EnterpriseBpm.ApiHost.csproj",
+      "isBackground": true,
+      "problemMatcher": "$msCompile",
+      "presentation": {
+        "group": "backend",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Frontend: Run Vite Dev",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "command": "npm run dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "group": "frontend",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Run Fullstack (Backend + Frontend)",
+      "dependsOn": [
+        "Backend: Run API Host",
+        "Frontend: Run Vite Dev"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
 }

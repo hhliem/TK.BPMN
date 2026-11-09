@@ -16,12 +16,12 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Chuỗi kết nối 'DefaultConnection' chưa được cấu hình.");
 
-        services.AddDbContextPool<SettingsDbContext>(options =>
+        services.AddDbContext<SettingsDbContext>(options =>
             options.UseSqlServer(connectionString, sql =>
             {
                 sql.MigrationsHistoryTable("__EFMigrationsHistory", SettingsDbContext.Schema);
                 sql.EnableRetryOnFailure(3);
-            }), poolSize: 256);
+            }));
 
         services.AddMemoryCache();
         services.AddDataProtection();

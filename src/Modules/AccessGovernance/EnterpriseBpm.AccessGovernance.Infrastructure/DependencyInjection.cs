@@ -19,9 +19,9 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection") 
             ?? throw new InvalidOperationException("Chuỗi kết nối cơ sở dữ liệu 'DefaultConnection' chưa được cấu hình trong hệ thống.");
 
-        services.AddDbContextPool<AuthDbContext>(options =>
+        services.AddDbContext<AuthDbContext>(options =>
             options.UseSqlServer(connectionString, sql => 
-                sql.MigrationsHistoryTable("__EFMigrationsHistory", AuthDbContext.Schema)), poolSize: 256);
+                sql.MigrationsHistoryTable("__EFMigrationsHistory", AuthDbContext.Schema)));
 
         // Memory cache cho L1
         services.AddMemoryCache();

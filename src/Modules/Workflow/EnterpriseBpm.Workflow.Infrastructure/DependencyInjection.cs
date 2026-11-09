@@ -20,13 +20,13 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Chuỗi kết nối cơ sở dữ liệu 'DefaultConnection' chưa được cấu hình trong hệ thống.");
 
-        // DbContext Pooling (TSK-807: MaxPoolSize = 256)
-        services.AddDbContextPool<WorkflowDbContext>(options =>
+        // DbContext Registration
+        services.AddDbContext<WorkflowDbContext>(options =>
             options.UseSqlServer(connectionString, sqlOptions =>
             {
                 sqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "workflow");
                 sqlOptions.EnableRetryOnFailure(3);
-            }), poolSize: 256);
+            }));
 
         services.AddScoped<IWorkflowDbContextProvider>(sp => sp.GetRequiredService<WorkflowDbContext>());
 

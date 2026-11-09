@@ -17,12 +17,12 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Chuỗi kết nối cơ sở dữ liệu 'DefaultConnection' chưa được cấu hình trong hệ thống.");
 
-        services.AddDbContextPool<DocumentDbContext>(options =>
+        services.AddDbContext<DocumentDbContext>(options =>
             options.UseSqlServer(connectionString, sqlOptions =>
             {
                 sqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "document");
                 sqlOptions.EnableRetryOnFailure(3);
-            }), poolSize: 256);
+            }));
 
         services.AddScoped<IDocumentDbContextProvider>(sp => sp.GetRequiredService<DocumentDbContext>());
 

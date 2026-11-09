@@ -16,9 +16,9 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection") 
             ?? throw new InvalidOperationException("Chuỗi kết nối cơ sở dữ liệu 'DefaultConnection' chưa được cấu hình trong hệ thống.");
 
-        services.AddDbContextPool<FormDbContext>(options =>
+        services.AddDbContext<FormDbContext>(options =>
             options.UseSqlServer(connectionString, sql => 
-                sql.MigrationsHistoryTable("__EFMigrationsHistory", FormDbContext.Schema)), poolSize: 256);
+                sql.MigrationsHistoryTable("__EFMigrationsHistory", FormDbContext.Schema)));
 
         services.AddMemoryCache();
         services.AddScoped<IFormVersionService, FormVersionService>();

@@ -17,8 +17,8 @@ public static class AnalyticsServiceExtensions
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? "Server=(localdb)\\mssqllocaldb;Database=EnterpriseBpmPlatformDb;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-        // 1. Database Context Pool (High-Performance Tuning)
-        services.AddDbContextPool<AnalyticsDbContext>(options =>
+        // 1. Database Context
+        services.AddDbContext<AnalyticsDbContext>(options =>
         {
             options.UseSqlServer(connectionString, sql =>
             {

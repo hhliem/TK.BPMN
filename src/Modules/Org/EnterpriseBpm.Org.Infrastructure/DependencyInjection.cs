@@ -16,9 +16,9 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection") 
             ?? throw new InvalidOperationException("Chuỗi kết nối cơ sở dữ liệu 'DefaultConnection' chưa được cấu hình trong hệ thống.");
 
-        services.AddDbContextPool<OrgDbContext>(options =>
+        services.AddDbContext<OrgDbContext>(options =>
             options.UseSqlServer(connectionString, sql => 
-                sql.MigrationsHistoryTable("__EFMigrationsHistory", OrgDbContext.Schema)), poolSize: 256);
+                sql.MigrationsHistoryTable("__EFMigrationsHistory", OrgDbContext.Schema)));
 
         services.AddScoped<IOrgHierarchyService, OrgHierarchyService>();
         services.AddScoped<IDelegationResolver, DelegationResolver>();

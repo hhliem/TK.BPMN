@@ -18,12 +18,12 @@ public static class AiAssistantServiceExtensions
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Chuỗi kết nối cơ sở dữ liệu 'DefaultConnection' chưa được cấu hình.");
 
-        services.AddDbContextPool<AiDbContext>(options =>
+        services.AddDbContext<AiDbContext>(options =>
             options.UseSqlServer(connectionString, sql =>
             {
                 sql.MigrationsHistoryTable("__EFMigrationsHistory_Ai", "ai");
                 sql.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null);
-            }), poolSize: 256);
+            }));
 
         // HTTP Client Factory
         services.AddHttpClient("AiClient", client =>
