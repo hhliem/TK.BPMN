@@ -88,6 +88,7 @@ public class WorkflowDbContext : DbContext, IWorkflowDbContextProvider
                 .WithOne(t => t.Submission)
                 .HasPrincipalKey(s => s.WorkflowInstanceId)
                 .HasForeignKey(t => t.WorkflowInstanceId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
